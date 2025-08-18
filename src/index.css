@@ -1,0 +1,38 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import "tailwindcss";
+@theme{
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
+
+}
+
+body{
+  background-color: #E0E2E8;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  
+
+}
+.company-name{
+  text-shadow: 
+    -1px -1px 0 white, 
+     1px -1px 0 white, 
+    -1px  1px 0 white, 
+     1px  1px 0 white;
+}
+@layer{
+  .dashboard-menu{
+    @apply hover:bg-[rgba(107,107,182,0.9)] p-1.5 rounded cursor-pointer flex gap-3 active:bg-[rgba(104,118,238,0.7)] 
+  }
+  .submenu{
+    @apply text-[15px] ml-7 font-normal
+  }
+  .inventory-column{
+    @apply px-16 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider
+  }
+  .inventory-row{
+    @apply px-16 py-2 whitespace-nowrap text-sm text-gray-900
+  }
+}
