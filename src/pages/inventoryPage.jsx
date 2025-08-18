@@ -1,11 +1,6 @@
-import { InventoryTable } from "../components/inventoryTable";
 import { Sidebar } from "../components/sidebar";
-import { SearchBar } from "../components/searchBar";
-import { ReplenishButton } from "../components/replenishButton";
-import { ReleaseButton } from "../components/releaseButton";
-import { ExportExcelButton } from "../components/exportExcel";
-import { Pagination } from "../components/pagination";
 import { ProjectsInventory } from "../components/projectsInventory";
+
 export const InventoryPage = ()=>{
     return <div className="flex gap-1">
         <Sidebar/>

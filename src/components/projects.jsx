@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom"
+
+
 export const Projects = ()=>{
+    const navigate = useNavigate();
     return <div className="flex  flex-col   max-md:gap-4 gap-4 ">
-            <div className="grid grid-cols-2 gap-9 w-[800px] h-[600px] pl-30 pt-16 max-w-full ">
+            <div className="grid grid-cols-2 gap-9 w-[800px] h-[600px] pl-30 pt-16 max-w-full" onClick={()=>navigate('/selected')}>
                 <div className="flex w-[300px] h-[80px] bg-white  rounded-2xl p-5 hover:bg-[rgba(233,223,195,.7)] active:bg-amber-200 active:scale-97 max-w-full ">
                     <svg width="36" height="36" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M37.3333 16.3333C37.3333 21.488 33.1546 25.6667 28 25.6667C22.8453 25.6667 18.6667 21.488 18.6667 16.3333C18.6667 11.1787 22.8453 7 28 7C33.1546
@@ -9,7 +13,7 @@ export const Projects = ()=>{
                     stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <div className="border-l h-[36px] mx-6 pl-10 pt-1.5 font-bold">
-                        <span>project</span>
+                        <span>project1</span>
                     </div>
                 </div>
                 <div className="flex w-[300px] h-[80px] bg-white rounded-2xl p-5 hover:bg-[rgba(233,223,195,.7)] active:bg-amber-200 active:scale-97 max-w-full ">
