@@ -1,11 +1,7 @@
+import { ConfirmDeleteCancel } from './modals/confirmDeleteCancel';
+
 import { DataGrid } from '@mui/x-data-grid';
-import { IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button, } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 import { useState } from 'react';
 
@@ -17,8 +13,19 @@ export const AccountManagementTable = ()=>{
     { id: 3, name: 'Cody Phillips', age: 19, joinDate: '7/16/2025', department: 'Development' },
   ])
     const [open,setOpen] = useState(false)
-    const handleDeleteButton = ()=>{
-        
+    const [selectedId,setSelectedId] = useState(null)
+    const handleDeleteButton = (id)=>{
+        setSelectedId(id)
+        setOpen(true)
+    }
+    const handleConfirmDeleteButton = ()=>{
+        setOpen(false)
+        setRows((prev)=>prev.filter(row=>row.id!=selectedId))
+        setSelectedId(null)
+    }
+    const handleCancelModal = ()=>{
+      setOpen(false)
+      setSelectedId(null)
     }
     const columns = [
     { field: 'name', headerName: 'Name', flex: 1 },
@@ -30,12 +37,12 @@ export const AccountManagementTable = ()=>{
       headerName: '',
       width: 120,
       sortable: false,
-      renderCell: () => (
+      renderCell: (params) => (
         <div className="flex gap-2">
           <IconButton size="small" color="primary">
             <Edit fontSize="small" />
           </IconButton>
-          <IconButton size="small" color="error">
+          <IconButton size="small" color="error" onClick={()=>handleDeleteButton(params.row.id)}>
             <Delete fontSize="small" />
           </IconButton>
         </div>
@@ -43,13 +50,10 @@ export const AccountManagementTable = ()=>{
     },
   ];
 
- 
-
-
 
   return (
     <div className='h-[300px] w-[800px]'>
-        <div className="flex justify-end items-center px-2 py-2 bg-gray-50">
+      <div className="flex justify-end items-center px-2 py-2 bg-gray-50">
         <IconButton size="small">
           <FilterList />
         </IconButton>
@@ -69,20 +73,7 @@ export const AccountManagementTable = ()=>{
         disableSelectionOnClick
         />
         {/* Delete Confirmation Dialog */}
-      <Dialog open={open} >
-        <DialogTitle>{"Confirm Delete"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this record? This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button >Cancel</Button>
-          <Button  color="error" variant="contained">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDeleteCancel open={open} handleDelete={handleConfirmDeleteButton} handleCancel={handleCancelModal}/>
     </div>
   );
 }
