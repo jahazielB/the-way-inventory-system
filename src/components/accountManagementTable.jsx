@@ -17,6 +17,9 @@ export const AccountManagementTable = ()=>{
     { id: 3, name: 'Cody Phillips', age: 19, joinDate: '7/16/2025', department: 'Development' },
   ])
     const [open,setOpen] = useState(false)
+    const handleDeleteButton = ()=>{
+        
+    }
     const columns = [
     { field: 'name', headerName: 'Name', flex: 1 },
     { field: 'age', headerName: 'Age', width: 120 },
