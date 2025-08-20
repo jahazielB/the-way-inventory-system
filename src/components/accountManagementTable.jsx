@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 export const AccountManagementTable = ()=>{
@@ -14,6 +15,7 @@ export const AccountManagementTable = ()=>{
   ])
     const [open,setOpen] = useState(false)
     const [selectedId,setSelectedId] = useState(null)
+    const navigate = useNavigate()
     const handleDeleteButton = (id)=>{
         setSelectedId(id)
         setOpen(true)
@@ -39,7 +41,7 @@ export const AccountManagementTable = ()=>{
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
-          <IconButton size="small" color="primary">
+          <IconButton size="small" color="primary" onClick={()=>navigate('/accounts/edit')}>
             <Edit fontSize="small" />
           </IconButton>
           <IconButton size="small" color="error" onClick={()=>handleDeleteButton(params.row.id)}>
@@ -52,7 +54,7 @@ export const AccountManagementTable = ()=>{
 
 
   return (
-    <div className='h-[300px] w-[800px]'>
+    <div className=' w-[clamp(400px,50vw,800px)] aspect-[800/300]'>
       <div className="flex justify-end items-center px-2 py-2 bg-gray-50">
         <IconButton size="small">
           <FilterList />
