@@ -11,6 +11,9 @@ import { EditAccountPage } from "../pages/editAccountPage"
 import { ReplenishReleasePage } from "../pages/replenishOrReleasePage"
 import { NotificationsPage } from "../pages/notifsPage"
 import { ApprovalPage } from "../pages/approvalPage"
+import { StockManPage } from "../pages/stockmanPage"
+import { UserActionPage } from "../pages/userActionPage"
+import { UserReleaseReplenishPage } from "../pages/UserReleaseOrReplenishPage"
 
 export const router = createBrowserRouter([{
     path:'/',
@@ -64,5 +67,21 @@ export const router = createBrowserRouter([{
 {
     path:'/notifications/approval',
     element:<ApprovalPage/>
+},
+{
+    path:'/user',
+    element:<StockManPage/>
+},
+{
+    path:'/user/project',
+    element:<UserActionPage/>
+},
+{
+    path:'/user/userReplenish',
+    element:<UserReleaseReplenishPage />
+},
+{
+    path:'/user/userRelease',
+    element:<UserReleaseReplenishPage/>
 }
 ])

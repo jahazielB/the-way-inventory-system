@@ -24,7 +24,7 @@ body{
 }
 @layer{
   .dashboard-menu{
-    @apply hover:bg-[rgba(107,107,182,0.9)] p-1.5 rounded cursor-pointer flex gap-3 active:bg-[rgba(104,118,238,0.7)] 
+    @apply hover:bg-[rgba(107,107,182,0.9)] p-1.5  cursor-pointer flex gap-3 active:bg-[rgba(104,118,238,0.7)] 
   }
   .submenu{
     @apply text-[15px] ml-7 font-normal
@@ -34,5 +34,8 @@ body{
   }
   .inventory-row{
     @apply px-16 py-2 whitespace-nowrap text-sm text-gray-900
+  }
+  .title{
+    @apply bg-white rounded-2xl px-2.5
   }
 }

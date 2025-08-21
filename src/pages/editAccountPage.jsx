@@ -7,7 +7,7 @@ export const EditAccountPage = ()=>{
                         <Sidebar/>
                         <div className="flex flex-col ml-[5%] md:mx-[9%] lg:mx-[15%] xl:mx-[10%] max-md:gap-4 gap-4 p-4">
                             <div className="text-center text-blue-600 font-bold text-[20px] xl:text-[30px] ml-10">
-                                <h1>INVENTORY MANAGEMENT SYSTEM</h1>
+                                <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
                             </div>
                             <span className="text-center text-[42px] font-medium">Profile 1</span>
                             <div className="w-[clamp(200px,50vw,533px)] aspect-[533/467] bg-white rounded-2xl flex flex-col p-8 gap-3.5">
