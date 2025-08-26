@@ -8,7 +8,7 @@ const projects = [
 
 export const ProjectPreview=()=> {
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 font-jakarta h-[225px]">
+    <div className="bg-white rounded-2xl shadow-sm p-6 font-jakarta h-fit">
       {/* Header */}
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-[16px] font-semibold">Projects</h2>

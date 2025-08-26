@@ -1,4 +1,4 @@
-import { ExportExcelButton } from "./exportExcel";
+import { ExportExcelButton } from "./buttons/exportExcel";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -65,7 +65,7 @@ export const Chart = ()=> {
   };
 
   return (
-    <div className="bg-white h-[300px] w-[462px] lg:w-[562px] xl:w-[800px] 2xl:w-[900px] lg:h-[450px] p-8 rounded-2xl shadow-md font-jakarta">
+    <div className="bg-white h-[300px] w-[400px] lg:w-[562px] xl:w-[800px] 2xl:w-[900px] lg:h-[450px] p-7 rounded-2xl shadow-md font-jakarta">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-[16px] font-semibold">Inventory Summary</h2>
         <ExportExcelButton/>

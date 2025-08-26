@@ -29,7 +29,7 @@ export const ReportTable = ()=>{
     },
   ];
   return(
-    <div className='h-[300px] w-[800px] shadow-2xl'>
+    <div className='h-[300px] w-[clamp(400px,50vw,800px)] shadow-2xl'>
                     <div className="flex justify-between items-center px-2 py-2 bg-gray-50">
                         <span>Warrior Lures</span>
                         <div>

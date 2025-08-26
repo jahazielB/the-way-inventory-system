@@ -1,5 +1,5 @@
-import { ReplenishButton } from "../components/replenishButton"
-import { ReleaseButton } from "../components/releaseButton"
+import { ReplenishButton } from "../components/buttons/replenishButton"
+import { ReleaseButton } from "../components/buttons/releaseButton"
 import { useNavigate } from "react-router-dom"
 export const UserActionPage = ()=>{
     

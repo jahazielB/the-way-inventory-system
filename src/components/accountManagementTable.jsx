@@ -76,6 +76,7 @@ export const AccountManagementTable = ()=>{
         />
         {/* Delete Confirmation Dialog */}
       <ConfirmDeleteCancel open={open} handleDelete={handleConfirmDeleteButton} handleCancel={handleCancelModal}/>
+
     </div>
   );
 }

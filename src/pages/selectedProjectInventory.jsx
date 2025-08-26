@@ -1,9 +1,9 @@
 import { Sidebar } from "../components/sidebar"
 import { SearchBar } from "../components/searchBar"
-import { ReplenishButton } from "../components/replenishButton"
-import { ReleaseButton } from "../components/releaseButton"
-import { ExportExcelButton } from "../components/exportExcel"
-import { Pagination } from "../components/pagination"
+import { ReplenishButton } from "../components/buttons/replenishButton"
+import { ReleaseButton } from "../components/buttons/releaseButton"
+import { ExportExcelButton } from "../components/buttons/exportExcel"
+import { Pagination } from "@mui/material"
 import { InventoryTable } from "../components/inventoryTable"
 import { useNavigate } from "react-router-dom"
 export const SelectedProjectInventory = ()=>{
@@ -25,7 +25,7 @@ export const SelectedProjectInventory = ()=>{
                 </div>
                 <InventoryTable/>
                 <div className=" px-50">
-                    <Pagination/>
+                    <Pagination size="small" count={3} showFirstButton showLastButton />
                 </div>
             </div>
             

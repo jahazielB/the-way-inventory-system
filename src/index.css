@@ -27,7 +27,7 @@ body{
     @apply hover:bg-[rgba(107,107,182,0.9)] p-1.5  cursor-pointer flex gap-3 active:bg-[rgba(104,118,238,0.7)] 
   }
   .submenu{
-    @apply text-[15px] ml-7 font-normal
+    @apply text-[12px] md:text-[15px] ml-7 font-normal
   }
   .inventory-column{
     @apply px-16 py-2 text-left text-sm font-medium text-gray-700 uppercase tracking-wider
@@ -36,6 +36,6 @@ body{
     @apply px-16 py-2 whitespace-nowrap text-sm text-gray-900
   }
   .title{
-    @apply bg-white rounded-2xl px-2.5
+    @apply bg-white rounded-2xl px-2.5 text-[13px] md:text-[20px]  xl:text-[30px]
   }
 }

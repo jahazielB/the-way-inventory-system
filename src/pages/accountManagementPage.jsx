@@ -1,5 +1,5 @@
 import { Sidebar } from "../components/sidebar"
-import { CreateButton } from "../components/createButton"
+import { CreateButton } from "../components/buttons/createButton";
 import { AccountManagementTable } from "../components/accountManagementTable";
 
 import { DataGrid } from '@mui/x-data-grid';

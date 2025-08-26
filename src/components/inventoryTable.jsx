@@ -1,4 +1,11 @@
-
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 export const InventoryTable = () => {
   const data = [
     { item: "Yellow", units: 10, status: "In Stock" },
@@ -17,49 +24,53 @@ export const InventoryTable = () => {
     { item: "Item 14", units: "Text", status: "Text" },
     { item: "Item 15", units: "Text", status: "Text" },
   ];
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
   return (
     <div className="">
-      <div className="overflow-x-auto rounded-lg border border-gray-300">
-        <table className="min-w-full w-[900px] divide-y divide-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="inventory-column">
-                ITEM
-              </th>
-              <th className="inventory-column">
-                Units
-              </th>
-              <th className="inventory-column">
-                Status
-              </th>
-              <th className="w-10"></th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((row, index) => (
-              <tr key={index}>
-                <td className="inventory-row">
-                  {row.item}
-                </td>
-                <td className="inventory-row">
-                  {row.units}
-                </td>
-                <td className="inventory-row">
-                  {row.status}
-                </td>
-                <td className="px-2 py-0 whitespace-nowrap">
-                  <div className="flex items-center justify-center h-full">
-                    <button className="text-gray-500 hover:text-gray-700 cursor-pointer">
-                      ⋮
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell align="right">ITEM</StyledTableCell>
+            <StyledTableCell align="right">UNITS</StyledTableCell>
+            <StyledTableCell align="right">STATUS</StyledTableCell>
+            <StyledTableCell align="right">ACTIONS</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row) => (
+            <StyledTableRow key={row.name}>
+              <StyledTableCell component="th" scope="row">
+                {row.name}
+              </StyledTableCell>
+              <StyledTableCell align="right">{row.calories}</StyledTableCell>
+              <StyledTableCell align="right">{row.fat}</StyledTableCell>
+              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+              <StyledTableCell align="right">{row.protein}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
     </div>
   );
 };

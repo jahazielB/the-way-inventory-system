@@ -1,27 +1,31 @@
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export const Sidebar = ({bg})=>{
     const navigate = useNavigate()
+    const [isOpen,setIsOpen] = useState(false)
     const temporaryHandleClick = (menu)=>{
         navigate(`/${menu}`)
         console.log('clicked')
     }
     
-    return <div className="flex max-lg:w-[200px] lg:w-[256px]">
+    return (
+    <div className="flex max-md:fixed max-lg:w-[200px] lg:w-[256px] ">
     
       {/* Sidebar */}
-      <div className="min-h-screen w-64 bg-white text-[rgba(0,0,255,90)] flex flex-col justify-between rounded-2xl">
+      <div className={`h-full z-50 w-54 md:w-[256px]  transform transition-transform duration-300 md:min-h-screen bg-white text-[rgba(0,0,255,90)] max-md:fixed flex flex-col
+         justify-between rounded-2xl md:translate-x-0 ${isOpen?'translate-x-0':'-translate-x-full'}`}>
         {/* Top Section */}
         <div>
           {/* Company Name (Upper Right) */}
           <div className="flex p-4  ">
-            <h1 className="text-[32px] font-extrabold">THE WAY</h1>
+            <h1 className="text-[22px] md:text-[32px] font-extrabold">THE WAY</h1>
           </div>
 
           {/* Menu */}
-          <nav className="mt-8 ml-3.5">
+          <nav className="mt-8 ml-2 md:ml-3.5">
             <ul className="space-y-1.5">
-              <li className="dashboard-menu text-[20px] font-extrabold" style={bg?{backgroundColor:'#E0E2E8'}:{backgroundColor:'none'}} onClick={()=>temporaryHandleClick('dashboard')}>
+              <li className="dashboard-menu text-[15px] md:text-[20px] font-extrabold" style={bg?{backgroundColor:'#E0E2E8'}:{backgroundColor:'none'}} onClick={()=>temporaryHandleClick('dashboard')}>
                 <svg className="mt-1"  width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.3407 6.80171L11.652 1.11221C10.9479 0.410203 9.99424 0.0159912 9 0.0159912C8.00575 0.0159912 7.05206 0.410203 6.348 1.11221L0.659245 6.80171C0.449564 7.01005 0.283322 7.25794 0.170157 7.531C0.0569911 7.80407 -0.000847106 8.09688 -5.2455e-06 8.39246V15.7552C-5.2455e-06 16.3519 0.237048 16.9242 0.659005 17.3462C1.08096 17.7682 1.65326 18.0052 2.25 18.0052H15.75C16.3467 18.0052 16.919 17.7682 17.341 17.3462C17.7629 16.9242 18 16.3519 18 15.7552V8.39246C18.0008 8.09688 17.943 7.80407 17.8298 7.531C17.7167 7.25794 17.5504 7.01005 17.3407 6.80171ZM11.25 16.5052H6.75V13.5547C6.75 12.958 6.98705 12.3857 7.40901 11.9637C7.83096 11.5418 8.40326 11.3047 9 11.3047C9.59673 11.3047 10.169 11.5418 10.591 11.9637C11.0129 12.3857 11.25 12.958 11.25 13.5547V16.5052ZM16.5 15.7552C16.5 15.9541 16.421 16.1449 16.2803 16.2855C16.1397 16.4262 15.9489 16.5052 15.75 16.5052H12.75V13.5547C12.75 12.5601 12.3549 11.6063 11.6516 10.9031C10.9484 10.1998 9.99456 9.80471 9 9.80471C8.00543 9.80471 7.05161 10.1998 6.34835 10.9031C5.64508 11.6063 5.25 12.5601 5.25 13.5547V16.5052H2.25C2.05108 16.5052 1.86032 16.4262 1.71966 16.2855C1.57901 16.1449 1.5 15.9541 1.5 15.7552V8.39246C1.50069 8.1937 1.57964 8.0032 1.71975 7.86221L7.4085 2.17496C7.83127 1.75416 8.40349 1.51792 9 1.51792C9.5965 1.51792 10.1687 1.75416 10.5915
                  2.17496L16.2802 7.86446C16.4198 8.0049 16.4987 8.19448 16.5 8.39246V15.7552Z" />
@@ -51,7 +55,7 @@ export const Sidebar = ({bg})=>{
         </div>
 
         {/* Optional Bottom Section */}
-        <div className="flex-col p-4  ml-5 my-7 text-[13px] text-blue">
+        <div className="flex-col p-4  ml-5 my-7 text-[11px] md:text-[13px] text-blue">
             <div className="flex  gap-2 mb-2 cursor-pointer active:bg-amber-600 hover:bg-[rgba(107,107,182,0.9)] rounded-4xl" onClick={()=>navigate('/notifications')}>
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9.3005 2.97726C9.43746 2.63875 9.6724 2.34885 9.97519 2.14472C10.278 1.9406 10.6348 1.83154 11 1.83154C11.3652 1.83154 11.722 1.9406 12.0248 2.14472C12.3276 2.34885 12.5625 2.63875 12.6995 2.97726C14.0553 3.34964 15.2512 4.157 16.1034 5.27522C16.9557 6.39345 17.4171 7.76063 17.4167 9.1666V13.4722L19.096 15.9912C19.1881 16.1292 19.241 16.2897
@@ -74,7 +78,19 @@ export const Sidebar = ({bg})=>{
               <span>Logout</span>
             </div>
         </div>
-      </div>      
+      </div>
+      
+      <svg className="absolute md:hidden cursor-pointer active:scale-95" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={()=>setIsOpen(!isOpen)}>
+        <path d="M5 8H13.75M5 12H19M10.25 16L19 16" stroke="#0118D8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {/* Backdrop Overlay (mobile only) */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-opacity-50 md:hidden z-40"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
     </div>
+  )
 
 }
