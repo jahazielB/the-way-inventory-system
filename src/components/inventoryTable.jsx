@@ -26,7 +26,7 @@ export const InventoryTable = () => {
   ];
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: '#0000FF',
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -46,10 +46,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
   return (
     <div className="">
-        <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
+        <TableContainer component={Paper} sx={{ maxWidth: "100%", overflowX: "auto" }}>
+      <Table sx={{ minWidth:700 }} aria-label="customized table">
+        <TableHead >
+          <TableRow >
             <StyledTableCell align="right">ITEM</StyledTableCell>
             <StyledTableCell align="right">UNITS</StyledTableCell>
             <StyledTableCell align="right">STATUS</StyledTableCell>
@@ -65,7 +65,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
               <StyledTableCell align="right">{row.calories}</StyledTableCell>
               <StyledTableCell align="right">{row.fat}</StyledTableCell>
               <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="right">{row.protein}</StyledTableCell>
+             
             </StyledTableRow>
           ))}
         </TableBody>

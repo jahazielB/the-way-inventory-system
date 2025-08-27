@@ -7,9 +7,9 @@ export const Dashboard = ()=>{
     useEffect(()=>{
         setBg(true)
     },[])
-    return <div className="flex gap-1 ">
+    return <div className="md:flex gap-1 ">
         <Sidebar bg={bg}/>
-        <div className="flex flex-col gap-4 p-4 md:mx-18 lg:mx-24 xl:mx-50 2xl:mx-80 ">
+        <div className="flex flex-col gap-4 p-4 md:mx-0 lg:mx-24 xl:mx-50 2xl:mx-80 ">
             <div className="text-center text-blue-600 font-bold  ml-10">
                 <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
             </div>

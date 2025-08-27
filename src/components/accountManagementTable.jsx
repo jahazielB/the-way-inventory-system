@@ -54,7 +54,7 @@ export const AccountManagementTable = ()=>{
 
 
   return (
-    <div className=' w-[clamp(400px,50vw,800px)] aspect-[800/300]'>
+    <div className='h-[300px] w-[clamp(380px,50vw,700px)] max-sm:w-full max-md:w-full'>
       <div className="flex justify-end items-center px-2 py-2 bg-gray-50">
         <IconButton size="small">
           <FilterList />

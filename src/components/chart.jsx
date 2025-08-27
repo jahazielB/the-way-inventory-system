@@ -65,10 +65,10 @@ export const Chart = ()=> {
   };
 
   return (
-    <div className="bg-white h-[300px] w-[400px] lg:w-[562px] xl:w-[800px] 2xl:w-[900px] lg:h-[450px] p-7 rounded-2xl shadow-md font-jakarta">
+    <div className="bg-white h-[300px]  md:w-fit lg:w-[562px] xl:w-[800px] 2xl:w-[900px] lg:h-[450px] p-12 pt-2 max-sm:px-4  rounded-2xl shadow-md font-jakarta">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-[16px] font-semibold">Inventory Summary</h2>
-        <ExportExcelButton/>
+        <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:h-[35px]"}/>
       </div>
       <Bar className="my-4  w-full h-[500px] " data={data} options={{...options,maintainAspectRatio: false,responsive:true}} />
     </div>
