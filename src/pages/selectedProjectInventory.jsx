@@ -10,21 +10,25 @@ export const SelectedProjectInventory = ()=>{
     
     return <div className="lg:flex gap-1">
             <Sidebar/>
-            <div className="flex flex-col  md:mx-17 xl:mx-50 2xl:mx-90 max-md:gap-4 gap-4 p-4"> 
+            <div className="flex flex-col  md:mx-17 lg:mx-auto xl:mx-auto 2xl:mx-auto max-md:gap-4 gap-14 p-4"> 
                 <div className="text-center text-blue-600 font-bold">
                     <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
                 </div>
-                <div className="flex justify-around px-7">
-                    <SearchBar/>
-                    <div className="flex">
-                        <ReplenishButton click={'/inventory/replenishItems'} textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[35px]"}/>
-                        <ReleaseButton click={'/inventory/releaseItems'} textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[35px]"}/>
-                        <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[36px] px-4 mt-0"}/>
-                    </div>
+                <div>
+                    <div className="flex justify-evenly lg:justify-between  mb-2">
+                        <SearchBar/>
+                        <div className="flex gap-0">
+                            <ReplenishButton click={'/inventory/replenishItems'} textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[35px]"}/>
+                            <ReleaseButton click={'/inventory/releaseItems'} textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[35px]"}/>
+                            <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[36px] h-[20px] "}/>
+                        </div>
                     
+                    </div>
+                    <InventoryTable/>
                 </div>
-                <InventoryTable/>
-                <div className="px-18 md:px-60">
+                
+                
+                <div className="mx-auto">
                     <Pagination size="small" count={3} showFirstButton showLastButton />
                 </div>
             </div>

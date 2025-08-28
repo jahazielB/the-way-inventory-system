@@ -7,13 +7,13 @@ export const Dashboard = ()=>{
     useEffect(()=>{
         setBg(true)
     },[])
-    return <div className="md:flex gap-1 ">
+    return <div className="lg:flex gap-1 ">
         <Sidebar bg={bg}/>
-        <div className="flex flex-col gap-4 p-4 md:mx-0 lg:mx-24 xl:mx-50 2xl:mx-80 ">
+        <div className="flex flex-col gap-4 p-4 max-md:mx-0 max-lg:mx-20 lg:mx-auto  ">
             <div className="text-center text-blue-600 font-bold  ml-10">
                 <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
             </div>
-            <p className="text-white text-[15px] xl:text-[20px] font-bold">Hey Administator - <span className="font-normal text-[13px] xl:text-[16px]">here's what's happening today</span></p>
+            <p className="text-white text-[15px] xl:text-[20px] font-bold">Hey <span className="text-blue-600 font-jakarta">Administator</span> - <span className="font-normal text-[13px] xl:text-[16px]">here's what's happening today</span></p>
             <Chart/>
             <ProjectPreview/>
         </div>

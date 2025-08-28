@@ -10,11 +10,11 @@ export const Sidebar = ({bg})=>{
     }
     
     return (
-    <div className="flex max-md:fixed max-lg:w-[200px] lg:w-[256px] ">
+    <div className="flex max-lg:fixed max-lg:w-[200px] lg:w-[256px] ">
     
       {/* Sidebar */}
-      <div className={`h-full z-50 w-54 md:w-[256px]  transform transition-transform duration-300 md:min-h-screen bg-white text-[rgba(0,0,255,90)] max-md:fixed flex flex-col
-         justify-between rounded-2xl md:translate-x-0 ${isOpen?'translate-x-0':'-translate-x-full'}`}>
+      <div className={`h-full z-50 w-54 md:w-[256px]  transform transition-transform duration-300 md:min-h-screen bg-white text-[rgba(0,0,255,90)] max-lg:fixed flex flex-col
+         justify-between rounded-2xl lg:translate-x-0 ${isOpen?'translate-x-0':'-translate-x-full'}`}>
         {/* Top Section */}
         <div>
           {/* Company Name (Upper Right) */}
@@ -80,13 +80,13 @@ export const Sidebar = ({bg})=>{
         </div>
       </div>
       
-      <svg className="absolute md:hidden cursor-pointer active:scale-95" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={()=>setIsOpen(!isOpen)}>
+      <svg className="absolute lg:hidden cursor-pointer active:scale-95" width="60px" height="60px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={()=>setIsOpen(!isOpen)}>
         <path d="M5 8H13.75M5 12H19M10.25 16L19 16" stroke="#0118D8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       {/* Backdrop Overlay (mobile only) */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-opacity-50 md:hidden z-40"
+          className="fixed inset-0 bg-opacity-50 lg:hidden z-40"
           onClick={() => setIsOpen(false)}
         />
       )}

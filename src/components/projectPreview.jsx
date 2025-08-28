@@ -32,13 +32,13 @@ export const ProjectPreview=()=> {
             </div>
 
             {/* Project Name */}
-            <div className="w-1/3 font-semibold text-[15px]">{p.name}</div>
+            <div className="w-1/3 font-semibold text-[12px] md:text-[15px]">{p.name}</div>
 
             {/* Quantity */}
-            <div className="w-1/3 font-semibold text-[15px]">{p.qty}</div>
+            <div className="w-1/3 font-semibold text-[12px] md:text-[15px]">{p.qty}</div>
 
             {/* Stage */}
-            <div className="w-1/3 text-gray-500 text-[13px] ">{p.stage}</div>
+            <div className="w-1/3 text-gray-500 text-[10px] md:text-[13px]">{p.stage}</div>
 
             {/* Menu dots */}
             <div className="w-6 text-gray-400 cursor-pointer ">⋯</div>
