@@ -45,7 +45,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
   return (
-    <div className="overflow-auto w-[clamp(300px,70vw,1000px)] mx-auto">
+    <div className="overflow-auto  w-[clamp(300px,70vw,2000px)] mx-auto">
         <TableContainer component={Paper} sx={{ maxWidth: "100%", overflowX: "auto" }}>
       <Table  aria-label="customized table">
         <TableHead >
