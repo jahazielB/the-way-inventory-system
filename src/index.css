@@ -38,4 +38,7 @@ body{
   .title{
     @apply bg-white rounded-2xl px-2.5 text-[13px] md:text-[20px]  xl:text-[30px]
   }
+  .createAccountTextArea{
+    @apply w-[clamp(100px,70vw,350px)]  md:w-full h-[40px] md:h-[50px] lg:h-[55px] xl:h-[65px]  border border-[rgba(68,68,68,1)] rounded-[9px]
+  }
 }
