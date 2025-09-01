@@ -12,7 +12,7 @@ export const ProjectsInventory = ()=>{
                     stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <div className="border-l h-[36px] mx-6 pl-10 pt-1.5 font-bold">
-                        <span>General</span>
+                        <span>Warrior Lures</span>
                     </div>
                 </div>
                 <div className="flex w-[300px] h-[80px] bg-white rounded-2xl p-5 hover:bg-[rgba(233,223,195,.7)] active:bg-amber-200 active:scale-97 max-w-full shadow-2xl">

@@ -3,12 +3,9 @@ import { Chart } from "../components/chart"
 import { ProjectPreview } from "../components/projectPreview"
 import { useEffect, useState } from "react"
 export const Dashboard = ()=>{
-    const [bg,setBg]=useState(false)
-    useEffect(()=>{
-        setBg(true)
-    },[])
+    
     return <div className="lg:flex gap-1 ">
-        <Sidebar bg={bg}/>
+        <Sidebar/>
         <div className="flex flex-col gap-8 xl:gap-15 p-4 max-md:mx-0 max-lg:mx-20 lg:mx-auto  ">
             <div className="text-center text-blue-600 font-bold  ml-10">
                 <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
