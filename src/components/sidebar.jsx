@@ -16,37 +16,37 @@ export const Sidebar = ({bg})=>{
     
       {/* Sidebar */}
       <div className={`h-full z-[1300]  w-54 md:w-[256px]  transform transition-transform duration-300 md:min-h-screen bg-white text-[rgba(0,0,255,90)] max-lg:fixed flex flex-col
-         justify-between rounded-2xl lg:translate-x-0 ${isOpen?'translate-x-0':'-translate-x-full'}`}>
+         justify-between rounded-r-2xl lg:translate-x-0 ${isOpen?'translate-x-0':'-translate-x-full'}`}>
         {/* Top Section */}
         <div>
           {/* Company Name (Upper Right) */}
-          <div className="flex p-4  ">
+          <div className="flex p-4 ">
             <h1 className="text-[22px] md:text-[32px] font-extrabold">THE WAY</h1>
           </div>
 
           {/* Menu */}
-          <nav className="mt-8 ml-2 md:ml-3.5">
-            <ul className="space-y-1.5">
-              <li className={`dashboard-menu text-[15px] md:text-[20px] font-extrabold ${location.pathname === '/dashboard'&&'bg-gray-50'}`}  onClick={()=>temporaryHandleClick('dashboard')}>
-                <svg className="mt-1"  width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
+          <nav className="mt-8 ml-2 md:ml-0">
+            <ul className="space-y-1.5 ">
+              <li className={`dashboard-menu  text-[15px] md:text-[20px] font-extrabold ${location.pathname === '/dashboard'&&'bg-gray-100'}`}  onClick={()=>temporaryHandleClick('dashboard')}>
+                <svg className="mt-1 ml-3.5"  width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.3407 6.80171L11.652 1.11221C10.9479 0.410203 9.99424 0.0159912 9 0.0159912C8.00575 0.0159912 7.05206 0.410203 6.348 1.11221L0.659245 6.80171C0.449564 7.01005 0.283322 7.25794 0.170157 7.531C0.0569911 7.80407 -0.000847106 8.09688 -5.2455e-06 8.39246V15.7552C-5.2455e-06 16.3519 0.237048 16.9242 0.659005 17.3462C1.08096 17.7682 1.65326 18.0052 2.25 18.0052H15.75C16.3467 18.0052 16.919 17.7682 17.341 17.3462C17.7629 16.9242 18 16.3519 18 15.7552V8.39246C18.0008 8.09688 17.943 7.80407 17.8298 7.531C17.7167 7.25794 17.5504 7.01005 17.3407 6.80171ZM11.25 16.5052H6.75V13.5547C6.75 12.958 6.98705 12.3857 7.40901 11.9637C7.83096 11.5418 8.40326 11.3047 9 11.3047C9.59673 11.3047 10.169 11.5418 10.591 11.9637C11.0129 12.3857 11.25 12.958 11.25 13.5547V16.5052ZM16.5 15.7552C16.5 15.9541 16.421 16.1449 16.2803 16.2855C16.1397 16.4262 15.9489 16.5052 15.75 16.5052H12.75V13.5547C12.75 12.5601 12.3549 11.6063 11.6516 10.9031C10.9484 10.1998 9.99456 9.80471 9 9.80471C8.00543 9.80471 7.05161 10.1998 6.34835 10.9031C5.64508 11.6063 5.25 12.5601 5.25 13.5547V16.5052H2.25C2.05108 16.5052 1.86032 16.4262 1.71966 16.2855C1.57901 16.1449 1.5 15.9541 1.5 15.7552V8.39246C1.50069 8.1937 1.57964 8.0032 1.71975 7.86221L7.4085 2.17496C7.83127 1.75416 8.40349 1.51792 9 1.51792C9.5965 1.51792 10.1687 1.75416 10.5915
                  2.17496L16.2802 7.86446C16.4198 8.0049 16.4987 8.19448 16.5 8.39246V15.7552Z" />
                 </svg>
-                <span>Dashboard</span>
+                <span className="">Dashboard</span>
               </li>
-              <li className="dashboard-menu submenu" onClick={()=>temporaryHandleClick('projects')}>
+              <li className={`dashboard-menu submenu ${location.pathname === '/projects'&&'bg-gray-100'}`} onClick={()=>temporaryHandleClick('projects')}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.25 5.25V12.75C2.25 13.5784 2.92157 14.25 3.75 14.25H14.25C15.0784 14.25 15.75 13.5784 15.75 12.75V6.75C15.75 5.92157 15.0784 5.25 14.25 5.25H9.75L8.25 3.75H3.75C2.92157 3.75 2.25 4.42157 2.25 5.25Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span>Projects</span>
               </li>
-              <li className="dashboard-menu submenu " onClick={()=>temporaryHandleClick('inventory')}>
+              <li className={`dashboard-menu submenu ${location.pathname === '/inventory'&&'bg-gray-100'}`} onClick={()=>temporaryHandleClick('inventory')}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 6V12M9 8.25V12M6 10.5V12M4.5 15H13.5C14.3284 15 15 14.3284 15 13.5V4.5C15 3.67157 14.3284 3 13.5 3H4.5C3.67157 3 3 3.67157 3 4.5V13.5C3 14.3284 3.67157 15 4.5 15Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span>Inventory</span>
               </li>
-              <li className="dashboard-menu submenu" onClick={()=>temporaryHandleClick('accounts')}>
+              <li className={`dashboard-menu submenu ${location.pathname === '/accounts'&&'bg-gray-100'}`} onClick={()=>temporaryHandleClick('accounts')}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 3.26563C9.54971 2.64282 10.354 2.25 11.25 2.25C12.9069 2.25 14.25 3.59315 14.25 5.25C14.25 6.90685 12.9069 8.25 11.25 8.25C10.354 8.25 9.54971 7.85718 9 7.23437M11.25 15.75H2.25V15C2.25 12.5147 4.26472 10.5 6.75 10.5C9.23528 10.5 11.25 12.5147 11.25 15V15.75ZM11.25 15.75H15.75V15C15.75 12.5147 13.7353 10.5 11.25 10.5C10.4304 10.5 9.66189 10.7191 9 11.102M9.75 5.25C9.75 6.90685 8.40685 8.25 6.75 8.25C5.09315 8.25 3.75 6.90685 3.75 5.25C3.75 3.59315 5.09315 2.25 6.75 2.25C8.40685 2.25 9.75 3.59315 9.75 5.25Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>

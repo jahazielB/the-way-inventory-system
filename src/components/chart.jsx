@@ -19,15 +19,12 @@ ChartJS.register(
   Legend
 );
 
-export const Chart = ()=> {
+export const Chart = ({datas})=> {
   const values = [10, 15, 5, 20, 25, 15, 10, 5, 8, 12, 18, 22];
   const total = values.reduce((a, b) => a + b, 0);
 
   const data = {
-    labels: [
-      "Paints", "Beads", "Spoons", "Item 4", "Item 5",
-      "Item 6", "Item 7", "Item 8", "Item 9", "Item 10", "Item 11", "Item 12"
-    ],
+    labels: datas.map(d=>d.item_name),
     datasets: [
       {
         label: "Percentage",

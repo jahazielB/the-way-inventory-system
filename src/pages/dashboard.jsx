@@ -2,7 +2,18 @@ import { Sidebar } from "../components/sidebar"
 import { Chart } from "../components/chart"
 import { ProjectPreview } from "../components/projectPreview"
 import { useEffect, useState } from "react"
+import supabase from "../supabase-client"
 export const Dashboard = ()=>{
+    const [data,setData]=useState([])
+    const fetch = async ()=>{
+        const {data,error} = await supabase.from('items').select('item_name').order('id',{ascending:true}).range(0,10)
+        if (error)console.error(error)
+        else setData(data)   
+        
+    }
+    useEffect(()=>{
+        fetch()    
+    },[])
     
     return <div className="lg:flex gap-1 ">
         <Sidebar/>
@@ -13,7 +24,7 @@ export const Dashboard = ()=>{
             <div>
                 <p className="text-white text-[15px] xl:text-[20px] font-bold">Hey <span className="text-blue-600 font-jakarta">Administrator</span> - <span className="font-normal text-[13px] xl:text-[16px]">here's what's happening today</span></p>
                 <div className="flex flex-col max-lg:gap-2 lg:gap-4">
-                    <Chart/>
+                    <Chart datas={data}/>
                     <ProjectPreview/>
                 </div>
             </div>
