@@ -1,5 +1,5 @@
 import { ExportExcelButton } from "./buttons/exportExcel";
-import { Bar } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,7 +7,8 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement
 } from "chart.js";
 
 ChartJS.register(
@@ -16,20 +17,23 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,ArcElement
 );
 
 export const Chart = ({datas})=> {
-  const values = [10, 15, 5, 20, 25, 15, 10, 5, 8, 12, 18, 22];
-  const total = values.reduce((a, b) => a + b, 0);
+  const total = datas.reduce((acc,row)=>acc + row.item_count,0)
+  const randomHSL = () => {
+  const hue = Math.floor(Math.random() * 360) // 0–359
+  return `hsl(${hue}, 70%, 50%)` // fixed saturation + lightness
+}
 
   const data = {
-    labels: datas.map(d=>d.item_name),
+    labels: datas.map(d=>d.customer_name),
     datasets: [
       {
         label: "Percentage",
-        data: values.map(v => (v / total) * 100),
-        backgroundColor: ["#34C759","#FFCC00","#FF383C"] // Tailwind's blue-500
+        data: datas.map(d => d.item_count ),
+        backgroundColor: datas.map(d=>randomHSL())
       }
     ]
   };
@@ -37,10 +41,10 @@ export const Chart = ({datas})=> {
   const options = {
     responsive: true,
     plugins: {
-      legend: { display: false },
+      legend: { display: false},
       tooltip: {
         callbacks: {
-          label: (context) => `${context.raw.toFixed(1)}%`
+          label: (context) => `${context.raw} items used`
         }
       }
     },
@@ -56,18 +60,58 @@ export const Chart = ({datas})=> {
       x:{
         grid:{
             display:false
+        },
+        ticks: {
+          autoSkip: false,
+         maxRotation: 0,
+         minRotation: 0,
+         callback: function(value, index, ticks) {
+        let label = this.getLabelForValue(value);
+        return label.length > 10 ? label.slice(0, 5) + "…" : label;
+      }
         }
       }
     }
   };
+  const pieOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "right", // or "bottom"
+      labels: {
+        font: {
+          size: 12
+        }
+      }
+    },
+    tooltip: {
+      callbacks: {
+        label: (context) => {
+          const dataset = context.dataset;
+          const total = dataset.data.reduce((a, b) => a + b, 0);
+          const value = context.raw;
+          const percentage = ((value / total) * 100).toFixed(1);
+          return `${context.label}: ${value} items used (${percentage}%)`;
+        }
+      }
+    }
+  }
+};
+
 
   return (
-    <div className="bg-white h-[300px]   md:w-full lg:w-[clamp(700px,70vw,1000px)] lg:h-[450px] p-12 pt-2 max-sm:px-4  rounded-2xl shadow-md font-jakarta">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-[16px] font-semibold">Inventory Summary</h2>
-        <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:h-[35px]"}/>
+    <div>
+      <div className="hidden sm:block bg-white h-[300px]   md:w-full lg:w-[clamp(700px,70vw,2000px)] lg:h-[450px] p-10 max-lg:px-4 lg:p-12 pt-2 max-sm:px-4  rounded-2xl shadow-md font-jakarta">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-[16px] font-semibold">Inventory Summary</h2>
+          <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:h-[35px]"}/>
+        </div>
+        <Bar className="my-3  w-full h-[500px] " data={data} options={{...options,maintainAspectRatio: false,responsive:true, indexAxis:'x'}} />
       </div>
-      <Bar className="my-4  w-full h-[500px] " data={data} options={{...options,maintainAspectRatio: false,responsive:true}} />
+      <div className="flex justify-center items-center sm:hidden">
+        <Pie  data={data} options={pieOptions}></Pie>
+      </div>
     </div>
+    
   );
 }

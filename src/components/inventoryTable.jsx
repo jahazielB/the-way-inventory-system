@@ -35,42 +35,62 @@ export const InventoryTable = () => {
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
+  "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
+    display: "table-row", // ✅ ensures background covers entire row
   },
-  // hide last border
-  '&:last-child td, &:last-child th': {
+  "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
   return (
-    <div className="overflow-auto  w-[clamp(300px,70vw,2000px)] mx-auto">
-        <TableContainer component={Paper} sx={{ maxWidth: "100%", overflowX: "auto" }}>
-      <Table  aria-label="customized table">
-        <TableHead >
-          <TableRow >
-            <StyledTableCell align="right">ITEM</StyledTableCell>
-            <StyledTableCell align="right">UNITS</StyledTableCell>
-            <StyledTableCell align="right">STATUS</StyledTableCell>
-            <StyledTableCell align="right">ACTIONS</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="right">{row.calories}</StyledTableCell>
-              <StyledTableCell align="right">{row.fat}</StyledTableCell>
-              <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-             
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className="overflow-auto w-[clamp(400px,90vw,2400px)] mx-auto">
+      <TableContainer component={Paper} sx={{ width: "100%", overflowX: "auto" }}>
+        <Table
+          aria-label="customized table"
+          sx={{ minWidth: 1200, tableLayout: "auto" }} // ✅ ensures wide + responsive
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Item</StyledTableCell>
+              <StyledTableCell>Unit</StyledTableCell>
+              <StyledTableCell>Opening Stock</StyledTableCell>
+              <StyledTableCell>ReOrder Point</StyledTableCell>
+              <StyledTableCell>ReOrder Qty</StyledTableCell>
+              <StyledTableCell>ReOrder Notification</StyledTableCell>
+              <StyledTableCell>Customer</StyledTableCell>
+              <StyledTableCell>Location</StyledTableCell>
+              <StyledTableCell>Stock In</StyledTableCell>
+              <StyledTableCell>Stock Out</StyledTableCell>
+              <StyledTableCell>Stock Balance</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row, i) => (
+              <StyledTableRow key={i}>
+                <StyledTableCell component="th" scope="row">
+                  {row.item}
+                </StyledTableCell>
+                <StyledTableCell align="right">{row.unit}</StyledTableCell>
+                <StyledTableCell align="right">{row.openingStock}</StyledTableCell>
+                <StyledTableCell align="right">{row.reorderPoint}</StyledTableCell>
+                <StyledTableCell align="right">{row.reorderQty}</StyledTableCell>
+                <StyledTableCell align="right">{row.notification}</StyledTableCell>
+                <StyledTableCell align="right">{row.customer}</StyledTableCell>
+                <StyledTableCell align="right">{row.location}</StyledTableCell>
+                <StyledTableCell align="right">{row.stockIn}</StyledTableCell>
+                <StyledTableCell align="right">{row.stockOut}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.stockBalance}
+                </StyledTableCell>
+                <StyledTableCell align="left">{row.status}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };

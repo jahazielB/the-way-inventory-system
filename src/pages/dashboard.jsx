@@ -6,13 +6,15 @@ import supabase from "../supabase-client"
 export const Dashboard = ()=>{
     const [data,setData]=useState([])
     const fetch = async ()=>{
-        const {data,error} = await supabase.from('items').select('item_name').order('id',{ascending:true}).range(0,10)
+        const {data,error} = await supabase.from('customer_item_counts').select('*')
         if (error)console.error(error)
-        else setData(data)   
+        else setData(data) 
         
+        console.log(data) 
     }
     useEffect(()=>{
-        fetch()    
+        fetch()
+           
     },[])
     
     return <div className="lg:flex gap-1 ">
