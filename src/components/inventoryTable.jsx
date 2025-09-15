@@ -6,24 +6,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-export const InventoryTable = () => {
-  const data = [
-    { item: "Yellow", units: 10, status: "In Stock" },
-    { item: "Black", units: 12, status: "In Stock" },
-    { item: "Green", units: 9, status: "Low In Stock" },
-    { item: "Talong", units: 5, status: "Low in Stock" },
-    { item: "Candy Red", units: 0, status: "Out of Stock" },
-    { item: "Item 6", units: "Text", status: "Text" },
-    { item: "Item 7", units: "Text", status: "Text" },
-    { item: "Item 8", units: "Text", status: "Text" },
-    { item: "Item 9", units: "Text", status: "Text" },
-    { item: "Item 10", units: "Text", status: "Text" },
-    { item: "Item 11", units: "Text", status: "Text" },
-    { item: "Item 12", units: "Text", status: "Text" },
-    { item: "Item 13", units: "Text", status: "Text" },
-    { item: "Item 14", units: "Text", status: "Text" },
-    { item: "Item 15", units: "Text", status: "Text" },
-  ];
+import { Pagination } from "@mui/material"
+export const InventoryTable = ({data,rows,pages}) => {
+  
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#0000FF',
@@ -64,33 +49,35 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
               <StyledTableCell>Stock In</StyledTableCell>
               <StyledTableCell>Stock Out</StyledTableCell>
               <StyledTableCell>Stock Balance</StyledTableCell>
-              <StyledTableCell>Status</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((row, i) => (
               <StyledTableRow key={i}>
                 <StyledTableCell component="th" scope="row">
-                  {row.item}
+                  {row.item_name}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.unit}</StyledTableCell>
-                <StyledTableCell align="right">{row.openingStock}</StyledTableCell>
-                <StyledTableCell align="right">{row.reorderPoint}</StyledTableCell>
+                <StyledTableCell align="left">{row.unit}</StyledTableCell>
+                <StyledTableCell align="left">{row.opening_stock}</StyledTableCell>
+                <StyledTableCell align="left">{row.reorder_point}</StyledTableCell>
                 <StyledTableCell align="right">{row.reorderQty}</StyledTableCell>
-                <StyledTableCell align="right">{row.notification}</StyledTableCell>
-                <StyledTableCell align="right">{row.customer}</StyledTableCell>
+                <StyledTableCell align="left">{!row.reorder_notification?'in stock':'REORDER '}</StyledTableCell>
+                <StyledTableCell align="right">{row.customer_name}</StyledTableCell>
                 <StyledTableCell align="right">{row.location}</StyledTableCell>
-                <StyledTableCell align="right">{row.stockIn}</StyledTableCell>
-                <StyledTableCell align="right">{row.stockOut}</StyledTableCell>
+                <StyledTableCell align="right">{row.stock_in}</StyledTableCell>
+                <StyledTableCell align="right">{row.stock_out}</StyledTableCell>
                 <StyledTableCell align="right">
-                  {row.stockBalance}
+                  {row.stock_balance}
                 </StyledTableCell>
-                <StyledTableCell align="left">{row.status}</StyledTableCell>
+               
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="flex justify-center my-3">
+        <Pagination size="small" count={3} showFirstButton showLastButton />
+      </div>
     </div>
   );
 };

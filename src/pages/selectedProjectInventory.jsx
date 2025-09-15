@@ -3,10 +3,39 @@ import { SearchBar } from "../components/searchBar"
 import { ReplenishButton } from "../components/buttons/replenishButton"
 import { ReleaseButton } from "../components/buttons/releaseButton"
 import { ExportExcelButton } from "../components/buttons/exportExcel"
-import { Pagination } from "@mui/material"
+
 import { InventoryTable } from "../components/inventoryTable"
 import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import supabase from "../supabase-client"
 export const SelectedProjectInventory = ()=>{
+    const [data, setData] = useState([])
+    const [page, setPage] = useState(1)
+    const rowsPerPage = 10
+    const [total, setTotal] = useState(0)
+
+    const fetchData = async () => {
+        const from = (page - 1) * rowsPerPage
+        const to = from + rowsPerPage - 1
+
+    // ✅ fetch paginated rows
+        const { data, error, count } = await supabase
+        .from("item_summary")
+        .select("*", { count: "exact" }) // count = total rows in view
+        .range(from, to)
+
+        if (error) console.error(error)
+        else {
+        setData(data)
+        console.log(data)
+        setTotal(count)
+        }
+  }
+
+  useEffect(() => {
+    fetchData()
+    
+  }, [page]) // refetch when page changes
     
     return <div className="lg:flex gap-1">
             <Sidebar/>
@@ -24,10 +53,8 @@ export const SelectedProjectInventory = ()=>{
                         </div>
                     
                     </div>
-                    <InventoryTable/>
-                    <div className="flex justify-center my-3">
-                        <Pagination size="small" count={3} showFirstButton showLastButton />
-                    </div>
+                    <InventoryTable data={data} />
+                    
                     
                 </div>
                 
