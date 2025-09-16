@@ -5,14 +5,16 @@ import { ReleaseButton } from "../components/buttons/releaseButton"
 import { ExportExcelButton } from "../components/buttons/exportExcel"
 
 import { InventoryTable } from "../components/inventoryTable"
-import { useNavigate } from "react-router-dom"
+import { useNavigate,useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import supabase from "../supabase-client"
 export const SelectedProjectInventory = ()=>{
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
-    const rowsPerPage = 10
+    const [rowsPerPage] = useState(15)
     const [total, setTotal] = useState(0)
+    const [projectId,setProjectId] = useState(0)
+    const {projectinventory} = useParams()
 
     const fetchData = async () => {
         const from = (page - 1) * rowsPerPage
@@ -20,7 +22,7 @@ export const SelectedProjectInventory = ()=>{
 
     // ✅ fetch paginated rows
         const { data, error, count } = await supabase
-        .from("item_summary")
+        .from(projectinventory)
         .select("*", { count: "exact" }) // count = total rows in view
         .range(from, to)
 
@@ -29,13 +31,18 @@ export const SelectedProjectInventory = ()=>{
         setData(data)
         console.log(data)
         setTotal(count)
+         
         }
   }
 
   useEffect(() => {
     fetchData()
-    
+    console.log(projectinventory)
   }, [page]) // refetch when page changes
+
+  const handlePagination = (value)=>{
+    setPage(value)
+  }
     
     return <div className="lg:flex gap-1">
             <Sidebar/>
@@ -53,7 +60,7 @@ export const SelectedProjectInventory = ()=>{
                         </div>
                     
                     </div>
-                    <InventoryTable data={data} />
+                    <InventoryTable data={data} pages={handlePagination} rows={rowsPerPage} total={total}/>
                     
                     
                 </div>

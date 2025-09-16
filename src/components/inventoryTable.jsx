@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Pagination } from "@mui/material"
-export const InventoryTable = ({data,rows,pages}) => {
+export const InventoryTable = ({data,rows,pages,total}) => {
   
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
   return (
-    <div className="overflow-auto w-[clamp(400px,90vw,2400px)] mx-auto">
+    <div className="overflow-auto w-[clamp(400px,90vw,1500px)] mx-auto">
       <TableContainer component={Paper} sx={{ width: "100%", overflowX: "auto" }}>
         <Table
           aria-label="customized table"
@@ -61,12 +61,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                 <StyledTableCell align="left">{row.opening_stock}</StyledTableCell>
                 <StyledTableCell align="left">{row.reorder_point}</StyledTableCell>
                 <StyledTableCell align="right">{row.reorderQty}</StyledTableCell>
-                <StyledTableCell align="left">{!row.reorder_notification?'in stock':'REORDER '}</StyledTableCell>
-                <StyledTableCell align="right">{row.customer_name}</StyledTableCell>
-                <StyledTableCell align="right">{row.location}</StyledTableCell>
-                <StyledTableCell align="right">{row.stock_in}</StyledTableCell>
-                <StyledTableCell align="right">{row.stock_out}</StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="left">{!row.reorder_notification?'in stock':'REORDER'}</StyledTableCell>
+                <StyledTableCell align="left">{row.customer_name}</StyledTableCell>
+                <StyledTableCell align="left">{row.location}</StyledTableCell>
+                <StyledTableCell align="left">{row.stock_in}</StyledTableCell>
+                <StyledTableCell align="left">{row.stock_out}</StyledTableCell>
+                <StyledTableCell align="left">
                   {row.stock_balance}
                 </StyledTableCell>
                
@@ -76,7 +76,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         </Table>
       </TableContainer>
       <div className="flex justify-center my-3">
-        <Pagination size="small" count={3} showFirstButton showLastButton />
+        <Pagination size="small" count={Math.ceil(total/rows)} showFirstButton showLastButton onChange={(e,value)=>pages(value)}/>
       </div>
     </div>
   );
