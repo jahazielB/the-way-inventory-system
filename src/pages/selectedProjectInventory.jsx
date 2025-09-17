@@ -5,17 +5,19 @@ import { ReleaseButton } from "../components/buttons/releaseButton"
 import { ExportExcelButton } from "../components/buttons/exportExcel"
 
 import { InventoryTable } from "../components/inventoryTable"
-import { useNavigate,useParams } from "react-router-dom"
+import { useLocation,useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import supabase from "../supabase-client"
 export const SelectedProjectInventory = ()=>{
+    const location = useLocation()
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [rowsPerPage] = useState(15)
     const [total, setTotal] = useState(0)
-    const [projectId,setProjectId] = useState(0)
+    const [projectId,setProjectId] = useState()
     const {projectinventory} = useParams()
 
+    
     const fetchData = async () => {
         const from = (page - 1) * rowsPerPage
         const to = from + rowsPerPage - 1
@@ -29,14 +31,16 @@ export const SelectedProjectInventory = ()=>{
         if (error) console.error(error)
         else {
         setData(data)
-        console.log(data)
+        console.log(projectId)
         setTotal(count)
-         
+
+        
         }
   }
 
   useEffect(() => {
     fetchData()
+    setProjectId(location.state.projectId)
     console.log(projectinventory)
   }, [page]) // refetch when page changes
 

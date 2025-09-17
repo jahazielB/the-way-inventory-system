@@ -3,7 +3,7 @@ import { useState,useEffect } from "react"
 import supabase from "../supabase-client"
 
 
-export const Projects = ({handleClick})=>{
+export const Projects = ({handleClick,handleGeneralClick})=>{
     const [data,setData] = useState([])
     const fetch = async()=>{
             const {data,error} = await supabase.from('customers').select('*')
@@ -32,7 +32,7 @@ export const Projects = ({handleClick})=>{
                 </div>}
                 {data.map((p,index)=>
                     <div key={index} className="flex w-full h-[80px] max-sm:h-[60px]  bg-white rounded-[10px] p-5 max-sm:p-3 hover:bg-[rgba(233,223,195,.7)]
-                         active:bg-amber-200 active:scale-97  shadow-2xl" onClick={()=>handleClick()}>
+                         active:bg-amber-200 active:scale-97  shadow-2xl" onClick={()=>handleClick(p.id)}>
                         <svg width="36" height="36" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M37.3333 16.3333C37.3333 21.488 33.1546 25.6667 28 25.6667C22.8453 25.6667 18.6667 21.488 18.6667 16.3333C18.6667 11.1787 22.8453 7 28 7C33.1546
                                 7 37.3333 11.1787 37.3333 16.3333Z" stroke="black" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>

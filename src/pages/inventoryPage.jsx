@@ -5,8 +5,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const InventoryPage = ()=>{
     const navigate = useNavigate()
-    const handleClick = (id )=>{
-        navigate(`/inventory/item_summary_per_customer`)
+    const handleClick = (id)=>{
+        navigate(`/inventory/item_summary_per_customer`,{state:{projectId:id}})
+        console.log("passing:" ,id)
     }
     return <div className="lg:flex">
         <Sidebar/>
