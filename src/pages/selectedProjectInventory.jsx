@@ -9,13 +9,12 @@ import { useLocation,useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import supabase from "../supabase-client"
 export const SelectedProjectInventory = ()=>{
-    const location = useLocation()
+
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [rowsPerPage] = useState(15)
     const [total, setTotal] = useState(0)
-    const [projectId,setProjectId] = useState()
-    const {projectinventory} = useParams()
+    const {customer_name} = useParams()
 
     
     const fetchData = async () => {
@@ -23,25 +22,24 @@ export const SelectedProjectInventory = ()=>{
         const to = from + rowsPerPage - 1
 
     // ✅ fetch paginated rows
-        const { data, error, count } = await supabase
-        .from(projectinventory)
+        const query = supabase
+        .from("item_summary")
         .select("*", { count: "exact" }) // count = total rows in view
-        .range(from, to)
+        .range(from, to);
+        const { data, error, count } = await (customer_name?query.eq("customer_name",customer_name):query)
+        
 
         if (error) console.error(error)
         else {
         setData(data)
-        console.log(projectId)
         setTotal(count)
-
-        
         }
   }
 
   useEffect(() => {
     fetchData()
-    setProjectId(location.state.projectId)
-    console.log(projectinventory)
+    
+    console.log("current project: ",customer_name)
   }, [page]) // refetch when page changes
 
   const handlePagination = (value)=>{

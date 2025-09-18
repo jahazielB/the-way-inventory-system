@@ -37,7 +37,11 @@ export const router = createBrowserRouter([{
     element:<SelectedProject/>
 },
 {
-    path:'/inventory/:projectinventory',
+    path:'/inventory/item_summary',
+    element: <SelectedProjectInventory/>
+},
+{
+    path:'/inventory/item_summary/:customer_name',
     element: <SelectedProjectInventory/>
 },
 {

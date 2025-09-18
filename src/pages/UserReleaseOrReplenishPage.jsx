@@ -1,7 +1,11 @@
 import { Button, Popover} from "@mui/material";
-import { useState } from "react";
+import { useState,useRef,useEffect } from "react";
+import Quagga from "quagga"
 export const UserReleaseReplenishPage =()=>{
     const [anchorEl, setAnchorEl] = useState(null);
+    const [scanning, setScanning] = useState(false);
+    const [barcode, setBarcode] = useState("");
+    const scannerRef = useRef(null);
         const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
       };
@@ -9,6 +13,54 @@ export const UserReleaseReplenishPage =()=>{
         setAnchorEl(null);
       };
         const open = Boolean(anchorEl);
+    const startScanner = () => {
+    if (scannerRef.current && !scanning) {
+      Quagga.init(
+        {
+          inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: scannerRef.current,
+            constraints: {
+              facingMode: "environment",
+            },
+          },
+          decoder: {
+            readers: ["code_128_reader", "ean_reader", "upc_reader"],
+          },
+        },
+        (err) => {
+          if (err) {
+            console.error("Quagga init error:", err);
+            return;
+          }
+          Quagga.start();
+          setScanning(true);
+        }
+      );
+
+      Quagga.onDetected((data) => {
+        if (data?.codeResult?.code) {
+          setBarcode(data.codeResult.code);
+          console.log("Detected:", data.codeResult.code);
+          stopScanner(); // stop after detection
+        }
+      });
+    }
+  };
+
+  const stopScanner = () => {
+    if (scanning) {
+      Quagga.stop();
+      Quagga.offDetected(); // remove event listener
+      setScanning(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => stopScanner(); // cleanup
+  }, []);
+
     return(
         <div className="p-4.5">
             <div className="flex justify-between "> 
@@ -48,10 +100,17 @@ export const UserReleaseReplenishPage =()=>{
                                     
                                 </div>
                                 <Button className="w-[clamp(150px,50vw,364px)] aspect-[472/65] max-sm:w-[150px]" variant="contained">SUBMIT</Button>
+                               
                             </div>
                         </form>
+                        
+                        <div>
+                            <div ref={scannerRef} id="scanner-container" style={{ width: "100%", height: "300px" }} />
+                            <button onClick={startScanner} disabled={scanning}>Scan Barcode</button>
+                        </div>
                     </Popover>
             </div>
+                
             </div>
             
             <svg className="transform absolute  bottom-0  p-0  -z-10 left-0 h-[350px] " width="375"  viewBox="0 0 375 476" fill="none" xmlns="http://www.w3.org/2000/svg">
