@@ -4,68 +4,122 @@ import Quagga from "quagga"
 export const UserReleaseReplenishPage =()=>{
     const [anchorEl, setAnchorEl] = useState(null);
     const [scanning, setScanning] = useState(false);
-    const [barcode, setBarcode] = useState("");
+    const [result, setResult] = useState("");
     const scannerRef = useRef(null);
-        const handleClick = (event) => {
+    const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
       };
-        const handleClose = () => {
+    const handleClose = () => {
         setAnchorEl(null);
       };
         const open = Boolean(anchorEl);
-    const startScanner = () => {
-    if (scannerRef.current && !scanning) {
-      Quagga.init(
-        {
-          inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: scannerRef.current,
-            constraints: {
-              facingMode: "environment",
-            },
-          },
-          decoder: {
-            readers: ["code_128_reader", "ean_reader", "upc_reader"],
-          },
-        },
-        (err) => {
-          if (err) {
-            console.error("Quagga init error:", err);
-            return;
-          }
-          Quagga.start();
-          setScanning(true);
-        }
-      );
+   const handleProcessed = (result) => {
+    const drawingCtx = Quagga.canvas.ctx.overlay;
+    const drawingCanvas = Quagga.canvas.dom.overlay;
+    if (!drawingCtx || !drawingCanvas) return;
 
-      Quagga.onDetected((data) => {
-        if (data?.codeResult?.code) {
-          setBarcode(data.codeResult.code);
-          console.log("Detected:", data.codeResult.code);
-          stopScanner(); // stop after detection
-        }
+    drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+
+    // Candidate boxes
+    if (result?.boxes) {
+      result.boxes
+        .filter((box) => box !== result.box)
+        .forEach((box) => {
+          Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+            color: "yellow",
+            lineWidth: 2,
+          });
+        });
+    }
+
+    // Green box for main candidate
+    if (result?.box) {
+      Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+        color: "green",
+        lineWidth: 3,
       });
+    }
+
+    // Red line for detected code
+    if (result?.codeResult?.code) {
+      Quagga.ImageDebug.drawPath(
+        result.line,
+        { x: "x", y: "y" },
+        drawingCtx,
+        { color: "red", lineWidth: 3 }
+      );
     }
   };
 
-  const stopScanner = () => {
-    if (scanning) {
-      Quagga.stop();
-      Quagga.offDetected(); // remove event listener
-      setScanning(false);
-    }
+  const handleDetected = (data) => {
+    console.log("✅ Detected:", data.codeResult.code);
+    alert(`Detected: ${data.codeResult.code}`);
+    setScanning(false); // auto-stop after detection
   };
 
   useEffect(() => {
-    return () => stopScanner(); // cleanup
-  }, []);
+    if (scanning) {
+      Quagga.init(
+        {
+          inputStream: {
+            type: "LiveStream",
+            target: scannerRef.current,
+            constraints: {
+              facingMode: "environment", // back camera
+            },
+          },
+          locator: { patchSize: "medium", halfSample: true },
+          numOfWorkers: navigator.hardwareConcurrency || 4,
+          decoder: { readers: ["code_128_reader", "ean_reader"] },
+          locate: true,
+        },
+        (err) => {
+          if (err) {
+            console.error("Quagga init failed:", err);
+            return;
+          }
+          Quagga.start();
+
+          // Force styling for video + overlay
+          const overlay = Quagga.canvas.dom.overlay;
+          if (overlay) {
+            overlay.style.position = "absolute";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100%";
+            overlay.style.height = "100%";
+            overlay.style.zIndex = "2";
+          }
+
+          const video = scannerRef.current.querySelector("video");
+          if (video) {
+            video.style.position = "absolute";
+            video.style.top = "0";
+            video.style.left = "0";
+            video.style.width = "100%";
+            video.style.height = "100%";
+            video.style.objectFit = "cover"; // ✅ fills container nicely
+            video.style.zIndex = "1";
+          }
+        }
+      );
+
+      Quagga.onProcessed(handleProcessed);
+      Quagga.onDetected(handleDetected);
+    }
+
+    return () => {
+      Quagga.offProcessed(handleProcessed);
+      Quagga.offDetected(handleDetected);
+      if (Quagga.running) Quagga.stop();
+    };
+  }, [scanning]);
 
     return(
         <div className="p-4.5">
             <div className="flex justify-between "> 
                 <div className="text-blue-700 flex flex-col">
-                    <span className="text-[15px] font-black">THE WAY</span>
+                    <span className="text-[15px] font-black">{result?result:'THE WAY'}</span>
                     <span className="text-[10px]">Welcome, Stockman-PR</span>
                 </div>
                 <div className="flex gap-2">
@@ -105,8 +159,9 @@ export const UserReleaseReplenishPage =()=>{
                         </form>
                         
                         <div>
-                            <div ref={scannerRef} id="scanner-container" style={{ width: "100%", height: "300px" }} />
-                            <button onClick={startScanner} disabled={scanning}>Scan Barcode</button>
+                            <div ref={scannerRef} id="scanner-container" style={{ width: "100%", height: "100px" }} />
+                            <button onClick={()=>setScanning(true)} disabled={scanning}>Scan Barcode</button>
+                            <button onClick={()=>setScanning(false)} disabled={scanning}>stop scan</button>
                         </div>
                     </Popover>
             </div>
