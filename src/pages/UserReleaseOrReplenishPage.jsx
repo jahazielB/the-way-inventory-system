@@ -1,117 +1,79 @@
 import { Button, Popover} from "@mui/material";
 import { useState,useRef,useEffect } from "react";
-import Quagga from "quagga"
+import { BrowserMultiFormatReader } from "@zxing/browser";
+
 export const UserReleaseReplenishPage =()=>{
     const [anchorEl, setAnchorEl] = useState(null);
     const [scanning, setScanning] = useState(false);
     const [result, setResult] = useState("");
-    const scannerRef = useRef(null);
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
+    const codeReader = useRef(new BrowserMultiFormatReader());
+    const controlsRef = useRef(null);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
       };
     const handleClose = () => {
         setAnchorEl(null);
       };
-        const open = Boolean(anchorEl);
-   const handleProcessed = (result) => {
-    const drawingCtx = Quagga.canvas.ctx.overlay;
-    const drawingCanvas = Quagga.canvas.dom.overlay;
-    if (!drawingCtx || !drawingCanvas) return;
+    const open = Boolean(anchorEl);
 
-    drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    useEffect(() => {
+    if (scanning) {
+      codeReader.current
+        .decodeFromVideoDevice(null, videoRef.current, (result, err, controls) => {
+          // save controls so we can stop later
+          if (!controlsRef.current) controlsRef.current = controls;
 
-    // Candidate boxes
-    if (result?.boxes) {
-      result.boxes
-        .filter((box) => box !== result.box)
-        .forEach((box) => {
-          Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
-            color: "yellow",
-            lineWidth: 2,
-          });
+          const ctx = canvasRef.current?.getContext("2d");
+          if (ctx && videoRef.current) {
+            const { videoWidth, videoHeight } = videoRef.current;
+            canvasRef.current.width = videoWidth;
+            canvasRef.current.height = videoHeight;
+
+            ctx.clearRect(0, 0, videoWidth, videoHeight);
+
+            // yellow candidate box
+            ctx.strokeStyle = "yellow";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+              videoWidth * 0.2,
+              videoHeight * 0.3,
+              videoWidth * 0.6,
+              videoHeight * 0.4
+            );
+          }
+
+          if (result) {
+            setResult(result.getText());
+            alert("✅ Detected:", result);
+
+            if (ctx) {
+              ctx.strokeStyle = "lime";
+              ctx.lineWidth = 4;
+              ctx.strokeRect(
+                videoRef.current.videoWidth * 0.2,
+                videoRef.current.videoHeight * 0.3,
+                videoRef.current.videoWidth * 0.6,
+                videoRef.current.videoHeight * 0.4
+              );
+            }
+
+            // stop after detection
+            setScanning(false);
+            controls.stop();
+            controlsRef.current = null;
+          }
         });
     }
 
-    // Green box for main candidate
-    if (result?.box) {
-      Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
-        color: "green",
-        lineWidth: 3,
-      });
-    }
-
-    // Red line for detected code
-    if (result?.codeResult?.code) {
-      Quagga.ImageDebug.drawPath(
-        result.line,
-        { x: "x", y: "y" },
-        drawingCtx,
-        { color: "red", lineWidth: 3 }
-      );
-    }
-  };
-
-  const handleDetected = (data) => {
-    console.log("✅ Detected:", data.codeResult.code);
-    alert(`Detected: ${data.codeResult.code}`);
-    setScanning(false); // auto-stop after detection
-  };
-
-  useEffect(() => {
-    if (scanning) {
-      Quagga.init(
-        {
-          inputStream: {
-            type: "LiveStream",
-            target: scannerRef.current,
-            constraints: {
-              facingMode: "environment", // back camera
-            },
-          },
-          locator: { patchSize: "medium", halfSample: true },
-          numOfWorkers: navigator.hardwareConcurrency || 4,
-          decoder: { readers: ["code_128_reader", "ean_reader"] },
-          locate: true,
-        },
-        (err) => {
-          if (err) {
-            console.error("Quagga init failed:", err);
-            return;
-          }
-          Quagga.start();
-
-          // Force styling for video + overlay
-          const overlay = Quagga.canvas.dom.overlay;
-          if (overlay) {
-            overlay.style.position = "absolute";
-            overlay.style.top = "0";
-            overlay.style.left = "0";
-            overlay.style.width = "100%";
-            overlay.style.height = "100%";
-            overlay.style.zIndex = "2";
-          }
-
-          const video = scannerRef.current.querySelector("video");
-          if (video) {
-            video.style.position = "absolute";
-            video.style.top = "0";
-            video.style.left = "0";
-            video.style.width = "100%";
-            video.style.height = "100%";
-            video.style.objectFit = "cover"; // ✅ fills container nicely
-            video.style.zIndex = "1";
-          }
-        }
-      );
-
-      Quagga.onProcessed(handleProcessed);
-      Quagga.onDetected(handleDetected);
-    }
-
     return () => {
-      Quagga.offProcessed(handleProcessed);
-      Quagga.offDetected(handleDetected);
-      if (Quagga.running) Quagga.stop();
+      // cleanup when component unmounts or scanning toggled off
+      if (controlsRef.current) {
+        controlsRef.current.stop();
+        controlsRef.current = null;
+      }
     };
   }, [scanning]);
 
@@ -159,7 +121,13 @@ export const UserReleaseReplenishPage =()=>{
                         </form>
                         
                         <div>
-                            <div ref={scannerRef} id="scanner-container" style={{ width: "100%", height: "100px" }} />
+                            <div className="absolute top-30 w-full max-w-lg aspect-[16/9] bg-black rounded-lg overflow-hidden">
+                                <video ref={videoRef} className="w-full h-full object-cover" />
+                                <canvas
+                                 ref={canvasRef}
+                                 className="absolute top-0 left-0 w-full h-full"
+                                 />
+                            </div>
                             <button onClick={()=>setScanning(true)} disabled={scanning}>Scan Barcode</button>
                             <button onClick={()=>setScanning(false)} disabled={scanning}>stop scan</button>
                         </div>

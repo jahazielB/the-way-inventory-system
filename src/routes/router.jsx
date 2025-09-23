@@ -33,7 +33,7 @@ export const router = createBrowserRouter([{
     element:<InventoryPage/>
 },
 {
-    path:'/selected',
+    path:'/projects/:project_name',
     element:<SelectedProject/>
 },
 {
@@ -50,6 +50,10 @@ export const router = createBrowserRouter([{
 },
 {
     path:'/accounts/create',
+    element:<CreateAccountPage/>
+},
+{
+    path:'/inventory/addItem',
     element:<CreateAccountPage/>
 },
 {

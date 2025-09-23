@@ -6,9 +6,26 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Pagination } from "@mui/material"
+import { Pagination,IconButton,MenuList, MenuItem,Popper, ClickAwayListener } from "@mui/material"
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
+
+import { useState } from 'react';
 export const InventoryTable = ({data,rows,pages,total}) => {
+
+  const [open, setOpen] = useState(false);
+  const [rowId,setRowId] = useState()
   
+
+  const handleClick = (id) => {
+    setRowId(id)
+    setOpen((prev) => !prev);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#0000FF',
@@ -49,6 +66,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
               <StyledTableCell>Stock In</StyledTableCell>
               <StyledTableCell>Stock Out</StyledTableCell>
               <StyledTableCell>Stock Balance</StyledTableCell>
+              <StyledTableCell>Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -69,7 +87,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                 <StyledTableCell align="left">
                   {row.stock_balance}
                 </StyledTableCell>
-               
+                <StyledTableCell align='right'>
+                 
+                    <IconButton onClick={() => handleClick(row.item_id)} size="small" color="primary">
+                                <Edit fontSize="small" />
+                              </IconButton>
+                              <IconButton size="small" color="error">
+                                <Delete fontSize="small" />
+                              </IconButton>
+                  
+                </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
@@ -78,6 +105,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
       <div className="flex justify-center my-3">
         <Pagination size="small" count={Math.ceil(total/rows)} showFirstButton showLastButton onChange={(e,value)=>pages(value)}/>
       </div>
+      
     </div>
   );
 };

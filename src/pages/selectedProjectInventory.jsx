@@ -3,9 +3,11 @@ import { SearchBar } from "../components/searchBar"
 import { ReplenishButton } from "../components/buttons/replenishButton"
 import { ReleaseButton } from "../components/buttons/releaseButton"
 import { ExportExcelButton } from "../components/buttons/exportExcel"
+import { Button } from "@mui/material";
+
 
 import { InventoryTable } from "../components/inventoryTable"
-import { useLocation,useParams } from "react-router-dom"
+import { useLocation,useParams,useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import supabase from "../supabase-client"
 export const SelectedProjectInventory = ()=>{
@@ -15,7 +17,7 @@ export const SelectedProjectInventory = ()=>{
     const [rowsPerPage] = useState(15)
     const [total, setTotal] = useState(0)
     const {customer_name} = useParams()
-
+    const navigate = useNavigate()
     
     const fetchData = async () => {
         const from = (page - 1) * rowsPerPage
@@ -59,6 +61,12 @@ export const SelectedProjectInventory = ()=>{
                             <ReplenishButton click={'/inventory/replenishItems'} textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[35px]"}/>
                             <ReleaseButton click={'/inventory/releaseItems'} textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[35px]"}/>
                             <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:w-[clamp(10px,50vw,45px)] max-sm:h-[36px] h-[20px] "}/>
+                            <Button variant="contained" sx={{
+                                    fontSize: { xs: "0.75rem", sm: "0.875rem", md: ".8rem" }, // adjusts per screen size
+                                    px: { xs: 1, sm: 1, md: 1 }, // responsive horizontal padding
+                                    py: { xs: 0.5, sm: .8 }, // responsive vertical padding
+                                }} onClick={()=>navigate('/inventory/addItem')}>Add New Item</Button>
+
                         </div>
                     
                     </div>
