@@ -44,6 +44,11 @@ export const AddItem = ()=>{
         }, []);
     
     const handleSubmit = async () => {
+     // Validate required fields
+    if (!formData.item_name.trim() || !formData.unit.trim()) {
+        alert("Item Name and Unit are required!");
+        return;
+    }
     try {
       setLoading(true);
 

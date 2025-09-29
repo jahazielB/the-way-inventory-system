@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Pagination,IconButton,MenuList, MenuItem,Popper, ClickAwayListener } from "@mui/material"
+import { Pagination,IconButton,MenuItem,Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button } from "@mui/material"
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 
@@ -80,12 +80,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                 <StyledTableCell align="left">{row.reorder_point}</StyledTableCell>
                 <StyledTableCell align="right">{row.reorderQty}</StyledTableCell>
                 <StyledTableCell align="left">{!row.reorder_notification?'in stock':'REORDER'}</StyledTableCell>
-                <StyledTableCell align="left">{row.customer_name}</StyledTableCell>
-                <StyledTableCell align="left">{row.location}</StyledTableCell>
-                <StyledTableCell align="left">{row.stock_in}</StyledTableCell>
-                <StyledTableCell align="left">{row.stock_out}</StyledTableCell>
+                <StyledTableCell align="left">{row.customers}</StyledTableCell>
+                <StyledTableCell align="left">{row.location_name}</StyledTableCell>
+                <StyledTableCell align="left">{row.stock_in_total}</StyledTableCell>
+                <StyledTableCell align="left">{row.stock_out_total}</StyledTableCell>
                 <StyledTableCell align="left">
-                  {row.stock_balance}
+                  {row.balance}
                 </StyledTableCell>
                 <StyledTableCell align='right'>
                  
@@ -105,6 +105,93 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
       <div className="flex justify-center my-3">
         <Pagination size="small" count={Math.ceil(total/rows)} showFirstButton showLastButton onChange={(e,value)=>pages(value)}/>
       </div>
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+  <DialogTitle>Edit Item</DialogTitle>
+  <DialogContent className="space-y-4">
+    <TextField
+      fullWidth
+      label="Item Name"
+      name="item_name"
+      value={selectedItem?.item_name || ""}
+      onChange={(e) =>
+        setSelectedItem({ ...selectedItem, item_name: e.target.value })
+      }
+    />
+    <TextField
+      fullWidth
+      label="Unit"
+      name="unit"
+      value={selectedItem?.unit || ""}
+      onChange={(e) =>
+        setSelectedItem({ ...selectedItem, unit: e.target.value })
+      }
+    />
+    <TextField
+      fullWidth
+      type="number"
+      label="Opening Stock"
+      name="opening_stock"
+      value={selectedItem?.opening_stock || ""}
+      onChange={(e) =>
+        setSelectedItem({
+          ...selectedItem,
+          opening_stock: parseInt(e.target.value) || 0,
+        })
+      }
+    />
+    <TextField
+      fullWidth
+      type="number"
+      label="Reorder Point"
+      name="reorder_point"
+      value={selectedItem?.reorder_point || ""}
+      onChange={(e) =>
+        setSelectedItem({
+          ...selectedItem,
+          reorder_point: parseInt(e.target.value) || 0,
+        })
+      }
+    />
+    <TextField
+      fullWidth
+      type="number"
+      label="Reorder Quantity"
+      name="reorder_quantity"
+      value={selectedItem?.reorder_quantity || ""}
+      onChange={(e) =>
+        setSelectedItem({
+          ...selectedItem,
+          reorder_quantity: parseInt(e.target.value) || 0,
+        })
+      }
+    />
+    <TextField
+      select
+      fullWidth
+      label="Location"
+      name="location_id"
+      value={selectedItem?.location_id || ""}
+      onChange={(e) =>
+        setSelectedItem({
+          ...selectedItem,
+          location_id: parseInt(e.target.value),
+        })
+      }
+    >
+      {datas?.locations?.map((loc) => (
+        <MenuItem key={loc.id} value={loc.id}>
+          {loc.name}
+        </MenuItem>
+      ))}
+    </TextField>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleClose}>Cancel</Button>
+    <Button onClick={handleSave} variant="contained" color="primary">
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
       
     </div>
   );

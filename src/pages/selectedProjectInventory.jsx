@@ -28,13 +28,14 @@ export const SelectedProjectInventory = ()=>{
         .from("item_summary")
         .select("*", { count: "exact" }) // count = total rows in view
         .range(from, to);
-        const { data, error, count } = await (customer_name?query.eq("customer_name",customer_name):query)
+        const { data, error, count } = await (customer_name?query.ilike("customers",`%${customer_name}%`):query)
         
 
         if (error) console.error(error)
         else {
         setData(data)
         setTotal(count)
+        console.log(data)
         }
   }
 
