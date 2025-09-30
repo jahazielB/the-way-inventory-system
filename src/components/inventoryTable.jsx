@@ -6,20 +6,40 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Pagination,IconButton,MenuItem,Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button } from "@mui/material"
+import { Pagination,IconButton,MenuItem,Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button,CircularProgress } from "@mui/material"
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 
 import { useState } from 'react';
+import supabase from "../supabase-client"
+
 export const InventoryTable = ({data,rows,pages,total}) => {
 
   const [open, setOpen] = useState(false);
   const [rowId,setRowId] = useState()
+  const [selectedItem,setSelectedItem] = useState(null)
+  const [loadingId,setLoadingId] = useState(null)
+  const [wholeData,setWholeData] = useState(null)
   
 
-  const handleClick = (id) => {
-    setRowId(id)
-    setOpen((prev) => !prev);
+  const handleClick = async (itemId) => {
+    setLoadingId(itemId)
+    setRowId(itemId)
+    
+    const {data,error} = await supabase.rpc("manage_item",{
+      p_action: "read",
+      p_item_id: itemId
+    })
+    if (error) {
+    console.error(error);
+  } else {
+    setSelectedItem(data.item)
+    setWholeData(data)
+    console.log(data)
+    setLoadingId(null)
+    setOpen(true)
+  }
+
   };
 
   const handleClose = () => {
@@ -88,13 +108,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                   {row.balance}
                 </StyledTableCell>
                 <StyledTableCell align='right'>
-                 
+                  {
+                    loadingId==row.item_id?<CircularProgress/>:( <div>
                     <IconButton onClick={() => handleClick(row.item_id)} size="small" color="primary">
-                                <Edit fontSize="small" />
-                              </IconButton>
-                              <IconButton size="small" color="error">
-                                <Delete fontSize="small" />
-                              </IconButton>
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" color="error">
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </div>)
+                  }
+                 
+                  
                   
                 </StyledTableCell>
               </StyledTableRow>
@@ -165,6 +190,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         })
       }
     />
+
+    {/* Location Dropdown */}
     <TextField
       select
       fullWidth
@@ -178,16 +205,37 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         })
       }
     >
-      {datas?.locations?.map((loc) => (
+      {wholeData?.locations?.map((loc) => (
         <MenuItem key={loc.id} value={loc.id}>
           {loc.name}
+        </MenuItem>
+      ))}
+    </TextField>
+
+    {/* Customer Dropdown */}
+    <TextField
+      select
+      fullWidth
+      label="Customer"
+      name="customer_id"
+      value={selectedItem?.customer_id || ""}
+      onChange={(e) =>
+        setSelectedItem({
+          ...selectedItem,
+          customer_id: parseInt(e.target.value),
+        })
+      }
+    >
+      {wholeData?.customers?.map((cust) => (
+        <MenuItem key={cust.id} value={cust.id}>
+          {cust.name}
         </MenuItem>
       ))}
     </TextField>
   </DialogContent>
   <DialogActions>
     <Button onClick={handleClose}>Cancel</Button>
-    <Button onClick={handleSave} variant="contained" color="primary">
+    <Button variant="contained" color="primary">
       Save
     </Button>
   </DialogActions>
