@@ -71,7 +71,7 @@ export const SelectedProjectInventory = ()=>{
                         </div>
                     
                     </div>
-                    <InventoryTable data={data} pages={handlePagination} rows={rowsPerPage} total={total}/>
+                    <InventoryTable refetch={fetchData} data={data} pages={handlePagination} rows={rowsPerPage} total={total}/>
                     
                     
                 </div>

@@ -46,7 +46,7 @@ export const AddItem = ()=>{
     const handleSubmit = async () => {
      // Validate required fields
     if (!formData.item_name.trim() || !formData.unit.trim()) {
-        alert("Item Name and Unit are required!");
+        setSnackbar({ open: true, type: "error", message: "Item and Unit Required!" });
         return;
     }
     try {
@@ -139,6 +139,17 @@ export const AddItem = ()=>{
                             <Snackbar
                                 open={snackbar.open}
                                 autoHideDuration={3000}
+                                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                                slotProps={{
+                                root: {
+                                    sx: {
+                                    position: "fixed",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    },
+                                },
+                                }}
                                 onClose={() => setSnackbar({ ...snackbar, open: false })}
                             >
                                 <Alert severity={snackbar.type} sx={{ width: "100%" }}>

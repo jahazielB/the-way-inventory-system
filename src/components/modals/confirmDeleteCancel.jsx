@@ -16,7 +16,7 @@ export const ConfirmDeleteCancel = (props)=>{
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleCancel}>Cancel</Button>
-          <Button  color="error" variant="contained" onClick={()=>props.handleDelete()}>
+          <Button  color="error" variant="contained" onClick={()=>props.handleDelete(props.id)}>
             Delete
           </Button>
         </DialogActions>

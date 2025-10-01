@@ -75,7 +75,7 @@ export const AccountManagementTable = ()=>{
         disableSelectionOnClick
         />
         {/* Delete Confirmation Dialog */}
-      <ConfirmDeleteCancel open={open} handleDelete={handleConfirmDeleteButton} handleCancel={handleCancelModal}/>
+      <ConfirmDeleteCancel  open={open} handleDelete={handleConfirmDeleteButton} handleCancel={handleCancelModal}/>
 
     </div>
   );

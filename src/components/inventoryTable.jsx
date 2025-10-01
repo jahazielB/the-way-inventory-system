@@ -6,26 +6,26 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Pagination,IconButton,MenuItem,Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button,CircularProgress } from "@mui/material"
+import { Pagination,IconButton,MenuItem,Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button,CircularProgress,Select,
+  FormControl,InputLabel,Checkbox,ListItemText,Snackbar,Alert} from "@mui/material"
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
+import { ConfirmDeleteCancel } from './modals/confirmDeleteCancel';
 
 import { useState } from 'react';
 import supabase from "../supabase-client"
 
-export const InventoryTable = ({data,rows,pages,total}) => {
+export const InventoryTable = ({data,rows,pages,total,refetch}) => {
 
   const [open, setOpen] = useState(false);
+  const [modalOpen,setModalOpen] = useState(false)
   const [rowId,setRowId] = useState()
   const [selectedItem,setSelectedItem] = useState(null)
   const [loadingId,setLoadingId] = useState(null)
   const [wholeData,setWholeData] = useState(null)
+  const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
   
-
-  const handleClick = async (itemId) => {
-    setLoadingId(itemId)
-    setRowId(itemId)
-    
+  const fetch = async (itemId)=>{
     const {data,error} = await supabase.rpc("manage_item",{
       p_action: "read",
       p_item_id: itemId
@@ -33,18 +33,87 @@ export const InventoryTable = ({data,rows,pages,total}) => {
     if (error) {
     console.error(error);
   } else {
-    setSelectedItem(data.item)
+    const item = data.item
+    item.customer_ids = item.customers.map(c=>c.id)
+    setSelectedItem(item)
     setWholeData(data)
+    console.log(item)
     console.log(data)
     setLoadingId(null)
-    setOpen(true)
+    
+  }
   }
 
+  const handleClick =  (itemId) => {
+    setLoadingId(itemId)
+    setRowId(itemId)
+    fetch(itemId)
+    setOpen(true)
   };
+  const handleSave = async ()=>{
+    if (!selectedItem.item_name?.trim() || !selectedItem.unit?.trim()){
+        setSnackbar({ open: true, type: "error", message: "Item and Unit Required!" });
+        return;
+    }
+    try {
+      const { data, error } = await supabase.rpc("manage_item", {
+        p_action: "update",
+        p_item_id: selectedItem.item_id,
+        p_item_name: selectedItem.item_name,
+        p_unit: selectedItem.unit,
+        p_opening_stock: selectedItem.opening_stock
+          ? parseInt(selectedItem.opening_stock)
+          : 0,
+        p_reorder_point: selectedItem.reorder_point
+          ? parseInt(selectedItem.reorder_point)
+          : 0,
+        p_reorder_quantity: selectedItem.reorder_quantity
+          ? parseInt(selectedItem.reorder_quantity)
+          : 0,
+        p_location_id: selectedItem.location_id
+          ? parseInt(selectedItem.location_id)
+          : null,
+        p_customer_ids: selectedItem.customer_ids || [],
+      });
+
+      if (error) {
+        console.error("Update error:", error);
+        alert("Failed to update item!");
+      } else {
+        console.log("Updated item:", data);
+        setSnackbar({ open: true, type: "success", message: "Item Update Success!" });
+        setOpen(false);
+        refetch()
+      }
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    setSnackbar({ open: true, type: "error", message: "Failed to save item." });
+  }
+    console.log(selectedItem)
+  }
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleDelete = async (itemId)=>{
+    try {
+    const { error } = await supabase.rpc("manage_item", {
+      p_action: "delete",
+      p_item_id: itemId,
+    });
+
+    if (error) throw error;
+
+    // ✅ Just update UI state
+    setSnackbar({ open: true, type: "success", message: "Item Deleted!" });
+    setModalOpen(false)
+    refetch()
+  } catch (err) {
+    console.error("Delete error:", err.message);
+    setSnackbar({ open: true, type: "error", message: "Error Deleting Item" });
+  }
+  }
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -113,7 +182,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                     <IconButton onClick={() => handleClick(row.item_id)} size="small" color="primary">
                       <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" color="error">
+                    <IconButton onClick={()=>{
+                      fetch(row.item_id)
+                      setModalOpen(true)
+                      console.log(row.item_id)}} size="small" color="error">
                       <Delete fontSize="small" />
                     </IconButton>
                   </div>)
@@ -132,7 +204,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
       </div>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
   <DialogTitle>Edit Item</DialogTitle>
-  <DialogContent className="space-y-4">
+  <DialogContent className="flex flex-col gap-3">
     <TextField
       fullWidth
       label="Item Name"
@@ -142,15 +214,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         setSelectedItem({ ...selectedItem, item_name: e.target.value })
       }
     />
-    <TextField
-      fullWidth
-      label="Unit"
-      name="unit"
-      value={selectedItem?.unit || ""}
-      onChange={(e) =>
-        setSelectedItem({ ...selectedItem, unit: e.target.value })
-      }
-    />
+    <FormControl fullWidth>
+      <InputLabel id="unit-label">Unit</InputLabel>
+      <Select
+        labelId='unit-label'
+        name='unit'
+        value={selectedItem?.unit|| ""}
+        onChange={(e) =>
+        setSelectedItem({
+          ...selectedItem,
+          unit: e.target.value,
+        })
+    }
+      >
+      {wholeData?.units?.map((u, i) => (
+      <MenuItem key={i} value={u}>
+        {u}
+      </MenuItem>
+    ))}
+      </Select>
+    </FormControl>
     <TextField
       fullWidth
       type="number"
@@ -213,33 +296,64 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     </TextField>
 
     {/* Customer Dropdown */}
-    <TextField
-      select
-      fullWidth
-      label="Customer"
-      name="customer_id"
-      value={selectedItem?.customer_id || ""}
-      onChange={(e) =>
-        setSelectedItem({
-          ...selectedItem,
-          customer_id: parseInt(e.target.value),
-        })
-      }
-    >
-      {wholeData?.customers?.map((cust) => (
-        <MenuItem key={cust.id} value={cust.id}>
-          {cust.name}
-        </MenuItem>
-      ))}
-    </TextField>
+    <FormControl fullWidth>
+      <InputLabel id="customer-label">Customer</InputLabel>
+      <Select
+        labelId="customer-label"
+        multiple
+        name="customer_ids"
+        value={selectedItem?.customer_ids || []}
+        onChange={(e) =>{
+          const selectedIds = e.target.value.map((id) => parseInt(id, 10));
+          setSelectedItem({
+            ...selectedItem,
+           [e.target.name]: selectedIds, // now an array of selected ids
+          })
+        }}
+        renderValue={(selected) =>
+          wholeData?.customers
+            ?.filter((c) => selected.includes(c.id))
+            .map((c) => c.name)
+            .join(", ")
+        }
+      >
+        {wholeData?.customers?.map((cust) => (
+          <MenuItem key={cust.id} value={cust.id}>
+            <Checkbox checked={selectedItem?.customer_ids.includes(cust.id)||false} />
+            <ListItemText primary={cust.name} />
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   </DialogContent>
   <DialogActions>
     <Button onClick={handleClose}>Cancel</Button>
-    <Button variant="contained" color="primary">
+    <Button onClick={handleSave} variant="contained" color="primary">
       Save
     </Button>
   </DialogActions>
 </Dialog>
+{/* Snackbar for Success / Error */}
+        <Snackbar
+            open={snackbar.open}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            slotProps={{
+              root: {
+                sx: {
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                },
+              },
+            }}
+            autoHideDuration={3000}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}>
+              <Alert severity={snackbar.type} sx={{ width: "100%" }}>
+                {snackbar.message}
+                </Alert>
+        </Snackbar>
+        <ConfirmDeleteCancel id={selectedItem?.item_id||null} open={modalOpen} handleDelete={handleDelete} handleCancel={()=>setModalOpen(false)}/>
       
     </div>
   );
