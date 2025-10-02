@@ -1,4 +1,4 @@
-import { Button, Popover,Snackbar} from "@mui/material";
+import { Button, Popover,Snackbar,Alert} from "@mui/material";
 import { useState,useRef,useEffect } from "react";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 
@@ -6,8 +6,7 @@ export const UserReleaseReplenishPage =()=>{
     const [anchorEl, setAnchorEl] = useState(null);
     const [scanning, setScanning] = useState(false);
     const [result, setResult] = useState("");
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMsg, setSnackbarMsg] = useState("");
+    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
 
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
@@ -71,8 +70,7 @@ export const UserReleaseReplenishPage =()=>{
             } catch (e) {
               console.log("Beep not supported:", e);
             }
-              setSnackbarMsg("✅ Detected: " + result.getText());
-              setSnackbarOpen(true);
+              setSnackbar({ open: true, type: "success", message: `Detected: ${result.getText()}`});
 
 
             if (ctx) {
@@ -107,7 +105,7 @@ export const UserReleaseReplenishPage =()=>{
         <div className="p-4.5">
             <div className="flex justify-between "> 
                 <div className="text-blue-700 flex flex-col">
-                    <span className="text-[15px] font-black">{result?result:'THE WAY'}</span>
+                    <span className="text-[15px] font-black">THE WAY</span>
                     <span className="text-[10px]">Welcome, Stockman-PR</span>
                 </div>
                 <div className="flex gap-2">
@@ -167,11 +165,24 @@ export const UserReleaseReplenishPage =()=>{
                 <path d="M573.914 322.796C632.092 539.916 533.731 754.92 354.22 803.02C174.708 851.12 -17.9764 714.102 -76.1537 496.981C-134.331 279.86 -35.9704 64.8565 143.541 16.7565C323.052 -31.3434 515.737 105.675 573.914 322.796Z" fill="#1B56FD"/>
             </svg>
             <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={2000} // hide after 2s
-              onClose={() => setSnackbarOpen(false)}
-              message={snackbarMsg}
-/>
+            open={snackbar.open}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            slotProps={{
+              root: {
+                sx: {
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                },
+              },
+            }}
+            autoHideDuration={6000}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}>
+              <Alert severity={snackbar.type} sx={{ width: "100%" }}>
+                {snackbar.message}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }
