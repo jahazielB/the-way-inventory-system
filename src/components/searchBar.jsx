@@ -1,7 +1,7 @@
 
 
 
-export const SearchBar = () => {
+export const SearchBar = ({searchQuery,setSearchQuery,onKeyDown}) => {
   return (
     <div className="flex items-center h-[36px]  max-w-sm rounded-[10px] border border-gray-300 px-3 py-1 bg-white">
         <button className="active:scale-95">
@@ -12,7 +12,10 @@ export const SearchBar = () => {
       <input
         type="text"
         placeholder="Search"
-        className="ml-2 w-[30px]  border-none outline-none text-gray-700 placeholder-gray-400"
+        className="ml-2 w-[180px]  border-none outline-none text-gray-700 placeholder-gray-400"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyDown={onKeyDown} // triggers fetch on Enter
       />
     </div>
   );
