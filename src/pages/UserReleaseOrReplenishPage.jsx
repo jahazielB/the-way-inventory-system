@@ -1,4 +1,4 @@
-import { Button, Popover} from "@mui/material";
+import { Button, Popover,Snackbar} from "@mui/material";
 import { useState,useRef,useEffect } from "react";
 import { BrowserMultiFormatReader } from "@zxing/browser";
 
@@ -6,6 +6,9 @@ export const UserReleaseReplenishPage =()=>{
     const [anchorEl, setAnchorEl] = useState(null);
     const [scanning, setScanning] = useState(false);
     const [result, setResult] = useState("");
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMsg, setSnackbarMsg] = useState("");
+
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const codeReader = useRef(new BrowserMultiFormatReader());
@@ -47,7 +50,30 @@ export const UserReleaseReplenishPage =()=>{
 
           if (result) {
             setResult(result.getText());
-            alert("✅ Detected:", result);
+            if (navigator.vibrate) {
+              navigator.vibrate(200);
+            }
+
+            try {
+              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              const oscillator = ctx.createOscillator();
+              const gainNode = ctx.createGain();
+
+              oscillator.type = "sine"; // beep tone
+              oscillator.frequency.setValueAtTime(1000, ctx.currentTime); // 1000Hz = beep
+              gainNode.gain.setValueAtTime(0.1, ctx.currentTime); // volume
+
+              oscillator.connect(gainNode);
+              gainNode.connect(ctx.destination);
+
+              oscillator.start();7
+              oscillator.stop(ctx.currentTime + 0.2); // stop after 200ms
+            } catch (e) {
+              console.log("Beep not supported:", e);
+            }
+              setSnackbarMsg("✅ Detected: " + result.getText());
+              setSnackbarOpen(true);
+
 
             if (ctx) {
               ctx.strokeStyle = "lime";
@@ -100,8 +126,8 @@ export const UserReleaseReplenishPage =()=>{
                 </div>
             </div>
             <div className="p-5">
-                <div className="w-[clamp(300px,50vw,1000px)] aspect-[1000/616] max-sm:h-[700px] bg-white rounded-2xl flex justify-center p-9">
-                    <button  className="w-[clamp(50px,50vw,498px)] h-[32px]  bg-[rgba(241,243,249,1)] text-[12px] hover:bg-[rgba(61,61,62,0.8)]
+                <div className="w-[clamp(300px,50vw,1000px)] aspect-[1000/616] max-sm:h-[700px] bg-white rounded-2xl flex flex-col justify-center p-9">
+                    <button  className="w-[clamp(50px,50vw,498px)] h-[32px] mb-95 bg-[rgba(241,243,249,1)] text-[12px] hover:bg-[rgba(61,61,62,0.8)]
                      active:bg-[rgba(12,51,137,0.8)] active:scale-99 hover:text-white" onClick={handleClick}>+ ADD ITEM</button>
                     <Popover open={open} anchorEl={anchorEl} onClose={handleClose} anchorOrigin={{vertical: "bottom",horizontal: "left",}} transformOrigin={{vertical: "top",horizontal: "left",}}>
                         <form action="">
@@ -119,28 +145,33 @@ export const UserReleaseReplenishPage =()=>{
                                
                             </div>
                         </form>
-                        
-                        <div>
-                            <div className="absolute top-30 w-full max-w-lg aspect-[16/9] bg-black rounded-lg overflow-hidden">
-                                <video ref={videoRef} className="w-full h-full object-cover" />
-                                <canvas
-                                 ref={canvasRef}
-                                 className="absolute top-0 left-0 w-full h-full"
-                                 />
-                            </div>
-                            <button onClick={()=>setScanning(true)} disabled={scanning}>Scan Barcode</button>
-                            <button onClick={()=>setScanning(false)} disabled={scanning}>stop scan</button>
-                        </div>
                     </Popover>
-            </div>
+                    <div className="flex gap-5">
+                      <Button variant="contained" onClick={() => setScanning(true)} disabled={scanning}>Scan Barcode</Button>
+                      <Button variant="contained"  onClick={() => setScanning(false)} disabled={!scanning}>Stop Scan</Button>
+                </div>
+                </div>
+                
                 
             </div>
+              {scanning && (
+                                <div className="absolute top-30 w-full max-w-lg aspect-[16/9] bg-black rounded-lg overflow-hidden">
+                                  <video ref={videoRef} className="w-full h-full object-cover" />
+                                  <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
+                                </div>
+                              )}
+             
             
             <svg className="transform absolute  bottom-0  p-0  -z-10 left-0 h-[350px] " width="375"  viewBox="0 0 375 476" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M566.538 295.267C623.357 507.32 497.516 725.284 285.463 782.103C73.4103 838.922 -144.554 713.081 -201.373 501.028C-258.192 288.975 -132.351 71.0113 79.702 14.192C291.755 -42.6274 509.719 83.2141 566.538 295.267Z" fill="#0118D8"/>
                 <path d="M573.914 322.796C632.092 539.916 533.731 754.92 354.22 803.02C174.708 851.12 -17.9764 714.102 -76.1537 496.981C-134.331 279.86 -35.9704 64.8565 143.541 16.7565C323.052 -31.3434 515.737 105.675 573.914 322.796Z" fill="#1B56FD"/>
             </svg>
-            
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={2000} // hide after 2s
+              onClose={() => setSnackbarOpen(false)}
+              message={snackbarMsg}
+/>
         </div>
     )
 }
