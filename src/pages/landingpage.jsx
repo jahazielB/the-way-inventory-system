@@ -1,9 +1,21 @@
 import { useNavigate } from "react-router-dom";
+import supabase from "../supabase-client"
 const LandingPage = ()=>{
     const navigate = useNavigate();
     const temporaryHandleClick = ()=>{
         navigate('/dashboard')
     }
+
+    const handleGoogleLogin = async () =>{
+        const {error} = await supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+                redirectTo: "https://localhost:5173/dashboard", // redirect after login
+      },
+        });
+        if (error) alert(error.message);
+    }
+
     return <div className="p-0">
         {/* company text */}
         <div className="h-[61px] max-w-full  bg-white pt-[5px] mt-[80px]">
@@ -26,7 +38,7 @@ const LandingPage = ()=>{
                         active:bg-[rgba(104,118,238,0.7)] 
                         active:scale-95 
                         text-white text-sm font-medium 
-                         transition-all duration-200 ease-in-out " onClick={temporaryHandleClick} type="submit">Login</button>
+                         transition-all duration-200 ease-in-out "  type="submit">Login</button>
                     <div class="flex items-center ">
                         <div class="flex-grow border-t border-[rgba(1,24,216,1)]"></div>
                         <span class="mx-4 text-[rgba(1,24,216,1)] text-sm">or login with</span>
@@ -34,7 +46,8 @@ const LandingPage = ()=>{
                     </div>
                 </form>
                 <button
-                        type="submit"
+                       
+                        onClick={handleGoogleLogin}
                         className="w-[197px] h-[32px] rounded-[10px] bg-[rgba(1,24,216,1)] 
                                     hover:bg-[rgba(107,107,182,0.9)] 
                                     active:bg-[rgba(104,118,238,0.7)] 

@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter,Navigate } from "react-router-dom"
 import LandingPage from "../pages/landingpage"
 import { Dashboard } from "../pages/dashboard"
 import { ProjectsPage } from "../pages/projectsPage"
@@ -15,14 +15,23 @@ import { StockManPage } from "../pages/stockmanPage"
 import { UserActionPage } from "../pages/userActionPage"
 import { UserReleaseReplenishPage } from "../pages/UserReleaseOrReplenishPage"
 
-export const router = createBrowserRouter([{
-    path:'/',
+import { AdminRoute } from "./AdminRoute"
+
+export const router = createBrowserRouter([
+    {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+    {
+    path:'/login',
     element:<LandingPage/>,
     errorElement: <div className="flex justify-center py-50">BOSS san ka punta?</div>
 },
 {
     path:'/dashboard',
-    element: <Dashboard/>
+    element:(<AdminRoute>
+        <Dashboard/>
+    </AdminRoute> )
 },
 {
     path:'/projects',
