@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate,useLocation,Link } from "react-router-dom"
+import supabase from "../supabase-client"
 
 export const Sidebar = ({data})=>{
     const navigate = useNavigate()
@@ -9,6 +10,11 @@ export const Sidebar = ({data})=>{
         navigate(`/${menu}`)
         console.log('clicked')
     }
+    const handleLogout = async () => {
+      await supabase.auth.signOut();
+      window.location.href = "/login";
+    };
+
 
     
     return (
@@ -72,7 +78,7 @@ export const Sidebar = ({data})=>{
               </svg>
               <span>Administrator</span>
             </div>
-            <div className="flex gap-3 ">
+            <div className="flex gap-3 cursor-pointer active:bg-amber-600 hover:bg-[rgba(107,107,182,0.9)] rounded-4xl" onClick={handleLogout}>
               <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0.962406 8.01765L0.37594 7.54773L0 8.01765L0.37594 8.48758L0.962406 8.01765ZM7.72932 8.76953C7.92873 8.76953 8.11998 8.69032 8.26098 8.54931C8.40199 8.40831 8.4812 8.21706 8.4812 8.01765C8.4812 7.81824 8.40199 7.627 8.26098 7.48599C8.11998 7.34499 7.92873 7.26577 7.72932 7.26577V8.76953ZM3.38346 3.78833L0.37594 7.54773L1.54887 8.48758L4.55639 4.72818L3.38346 3.78833ZM0.37594 8.48758L3.38346 12.247L4.55639 11.3071L1.54887 7.54773L0.37594 8.48758ZM0.962406 8.76953H7.72932V7.26577H0.962406V8.76953Z" fill="#0118D8"/>
                 <path d="M6.97744 5.10931V4.55066C6.97744 3.33337 6.97744 2.7251 7.33383 2.3048C7.69023 1.8845 8.29023 1.78375 9.49023 1.58299L10.7474 1.37397C13.1857 0.967956 14.4045 0.764949 15.2023 1.44014C16 2.11608 16 3.35217 16 5.8236V10.2108C16 12.683 16 13.9191 15.203 14.5943C14.4045 15.271 13.1857 15.068 10.7474 14.6612L9.49023 14.4514C8.29023 14.2514 7.69023 14.1514 7.33383 13.7311C6.97744 13.3101 6.97744 12.701 6.97744 11.4837V11.074" stroke="#0118D8" stroke-width="2"/>

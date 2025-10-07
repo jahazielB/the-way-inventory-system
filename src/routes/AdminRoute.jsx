@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate,Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import supabase from "../supabase-client"
 
@@ -35,5 +35,5 @@ export const AdminRoute = ({ children }) => {
   if (loading) return <div className="p-4">Checking authentication...</div>;
   if (!authorized) return <Navigate to="/login" replace />;
 
-  return children;
+  return <Outlet/>;
 };

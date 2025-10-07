@@ -27,64 +27,30 @@ export const router = createBrowserRouter([
     element:<LandingPage/>,
     errorElement: <div className="flex justify-center py-50">BOSS san ka punta?</div>
 },
+//admin-only section
 {
-    path:'/dashboard',
-    element:(<AdminRoute>
-        <Dashboard/>
-    </AdminRoute> )
+    element:<AdminRoute/>,
+    children:[
+        {path: "/dashboard", element: <Dashboard/>},
+        {path: "/projects", element: <ProjectsPage/>},
+        {path: "/inventory", element: <InventoryPage/>},
+        {path: "/projects/:project_name", element: <SelectedProject/>},
+        {path: "/inventory/item_summary", element: <SelectedProjectInventory/>},
+        {path: "/inventory/item_summary/:customer_name", element: <SelectedProjectInventory/>},
+        {path: "/accounts", element: <AccountManagementPage/>},
+        {path: "/accounts/create", element: <CreateAccountPage/>},
+        {path: "/inventory/addItem", element: <CreateAccountPage/>},
+        {path: "/accounts/edit", element: <EditAccountPage/>},
+        {path: "/inventory/replenishItems", element: <ReplenishReleasePage mode={'Replenish Items'}/>},
+        {path: "/inventory/releaseItems", element: <ReplenishReleasePage mode={'Release Items'}/>},
+        {path: "/notifications", element: <NotificationsPage/>},
+        {path: "notifications/approval", element: <ApprovalPage/>}
+    ],
+    
+
 },
-{
-    path:'/projects',
-    element:<ProjectsPage/>
-},
-{
-    path:'/inventory',
-    element:<InventoryPage/>
-},
-{
-    path:'/projects/:project_name',
-    element:<SelectedProject/>
-},
-{
-    path:'/inventory/item_summary',
-    element: <SelectedProjectInventory/>
-},
-{
-    path:'/inventory/item_summary/:customer_name',
-    element: <SelectedProjectInventory/>
-},
-{
-    path:'/accounts',
-    element:<AccountManagementPage/>
-},
-{
-    path:'/accounts/create',
-    element:<CreateAccountPage/>
-},
-{
-    path:'/inventory/addItem',
-    element:<CreateAccountPage/>
-},
-{
-    path:'/accounts/edit',
-    element:<EditAccountPage/>
-},
-{
-    path:'/inventory/replenishItems',
-    element:<ReplenishReleasePage mode={'Replenish Items'}/>
-},
-{
-    path:'/inventory/releaseItems',
-    element:<ReplenishReleasePage mode={'Release Items'}/>
-},
-{
-    path:'/notifications',
-    element:<NotificationsPage/>
-},
-{
-    path:'/notifications/approval',
-    element:<ApprovalPage/>
-},
+
+//user 
 {
     path:'/user',
     element:<StockManPage/>
