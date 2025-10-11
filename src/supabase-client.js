@@ -6,6 +6,7 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl,supabaseKey,{
     auth: {
         persistSession: true,
+        storage: localStorage,
         autoRefreshToken: true,
         detectSessionInUrl: true,
     }

@@ -14,19 +14,21 @@ import { ApprovalPage } from "../pages/approvalPage"
 import { StockManPage } from "../pages/stockmanPage"
 import { UserActionPage } from "../pages/userActionPage"
 import { UserReleaseReplenishPage } from "../pages/UserReleaseOrReplenishPage"
+import AuthCallback from "../pages/AuthCallback"
 
 import { AdminRoute } from "./AdminRoute"
 
 export const router = createBrowserRouter([
     {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <AuthCallback/>,
   },
     {
     path:'/login',
     element:<LandingPage/>,
     errorElement: <div className="flex justify-center py-50">BOSS san ka punta?</div>
 },
+  
 //admin-only section
 {
     element:<AdminRoute/>,

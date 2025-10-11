@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { RouterProvider } from "react-router-dom";
 import { router } from './routes/router.jsx'
 import supabase from "./supabase-client"
+import { SessionContext } from "./components/hooks/SessionContext.jsx";
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -13,15 +14,18 @@ export default function App() {
       const { data } = await supabase.auth.getSession();
       setSession(data.session);
       setLoading(false);
+      // console.log(data.session)
     };
     getSession();
 
     // Listen for auth state changes (login/logout/refresh)
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
 
-    return () => listener.subscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   if (loading) {
@@ -32,6 +36,10 @@ export default function App() {
     );
   }
 
-  return <RouterProvider router={router} />;
+  return (
+    <SessionContext.Provider value={session}>
+      <RouterProvider router={router} />
+    </SessionContext.Provider>
+  );;
 }
 

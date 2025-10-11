@@ -10,7 +10,7 @@ const LandingPage = ()=>{
         const {error} = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: "https://localhost:5173/dashboard", // redirect after login
+                redirectTo: `https://localhost:5173/`, // redirect after login
       },
         });
         if (error) alert(error.message);
