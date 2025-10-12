@@ -20,8 +20,13 @@ import { AdminRoute } from "./AdminRoute"
 
 export const router = createBrowserRouter([
     {
+    path: "/auth/callback",
+    element: <AuthCallback/>,
+  },
+  {
     path: "/",
     element: <AuthCallback/>,
+    errorElement: <div className="flex justify-center py-50">BOSS san ka punta?</div>
   },
     {
     path:'/login',

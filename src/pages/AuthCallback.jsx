@@ -7,33 +7,35 @@ const AuthCallback = () => {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error(error);
-        navigate("/login");
-        return;
-      }
+      try {
+        // Get session after OTP verification
+        const { data, error } = await supabase.auth.getSession();
+        if (error || !data.session) throw new Error("No active session");
 
-      if (data.session) {
-        const { data: userData, error:userError } = await supabase
+        const user = data.session.user;
+
+        // Look up role in your `users` table
+        const { data: userData, error: userError } = await supabase
           .from("users")
           .select("role")
-          .eq("id", data.session.user.id)
+          .eq("id", user.id)
           .single();
-// If not found → logout + redirect
-        if (userError||!userData){
-            await supabase.auth.signOut();
-            alert("This account isn't registered!")
-            navigate("/login")
-            return
+
+        if (userError || !userData) {
+          await supabase.auth.signOut();
+          alert("Account not found in users table.");
+          navigate("/login");
+          return;
         }
 
-        if (userData?.role === "admin") {
+        // Redirect based on role
+        if (userData.role === "admin") {
           navigate("/dashboard");
         } else {
           navigate("/user");
         }
-      } else {
+      } catch (err) {
+        console.error("Auth callback error:", err.message);
         navigate("/login");
       }
     };
@@ -41,10 +43,9 @@ const AuthCallback = () => {
     handleCallback();
   }, [navigate]);
 
-
   return (
     <div className="flex items-center justify-center h-screen text-lg">
-      Checking session...
+      Verifying OTP...
     </div>
   );
 };
