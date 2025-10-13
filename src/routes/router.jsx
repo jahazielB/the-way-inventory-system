@@ -17,6 +17,7 @@ import { UserReleaseReplenishPage } from "../pages/UserReleaseOrReplenishPage"
 import AuthCallback from "../pages/AuthCallback"
 
 import { AdminRoute } from "./AdminRoute"
+import path from "path"
 
 export const router = createBrowserRouter([
     {
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
   
 //admin-only section
 {
-    element:<AdminRoute/>,
+    element:<AdminRoute allowedRoles={["admin"]}/>,
     children:[
         {path: "/dashboard", element: <Dashboard/>},
         {path: "/projects", element: <ProjectsPage/>},
@@ -59,19 +60,13 @@ export const router = createBrowserRouter([
 
 //user 
 {
-    path:'/user',
-    element:<StockManPage/>
+    element:<AdminRoute allowedRoles={["user"]} />,
+    children:[
+        {path:"/user",element:<StockManPage/>},
+        {path:"/user/project",element:<UserActionPage/>},
+        {path:"/user/userReplenish",element:<UserReleaseReplenishPage/>},
+        {path:"/user/userRelease",element:<UserReleaseReplenishPage/>}
+    ]
 },
-{
-    path:'/user/project',
-    element:<UserActionPage/>
-},
-{
-    path:'/user/userReplenish',
-    element:<UserReleaseReplenishPage />
-},
-{
-    path:'/user/userRelease',
-    element:<UserReleaseReplenishPage/>
-}
+
 ])
