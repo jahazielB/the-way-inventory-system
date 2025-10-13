@@ -2,10 +2,31 @@ import { Sidebar } from "../components/sidebar"
 import { CreateButton } from "../components/buttons/createButton";
 import { AccountManagementTable } from "../components/accountManagementTable";
 
+import { useState,useEffect, use } from "react";
+import supabase from "../supabase-client"
+
 import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 
 export const AccountManagementPage = ()=>{
+    const [data,setData] = useState()
+
+    useEffect(()=>{
+        const fetch = async ()=>{
+            const {data,error} = await supabase
+            .from("users")
+            .select("*")
+
+        if (error) console.error("Error fetching users:", error);
+        else {
+            console.log("Users:", data)
+            setData(data)
+        };
+
+        }
+
+    fetch()
+    },[])
    
     return <div className="lg:flex gap-1 ">
         <Sidebar/>
@@ -18,7 +39,7 @@ export const AccountManagementPage = ()=>{
                     <span>Employees</span>
                     <CreateButton customStyle={"max-lg:h-[30px] max-lg:px-2"}/>
                 </div>
-                <AccountManagementTable/>
+                <AccountManagementTable data={data}/>
             </div>
            
            
