@@ -1,18 +1,31 @@
-import{ useState } from "react";
+import{ useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
-  Button,MenuItem
+  Button,MenuItem,CircularProgress
 } from "@mui/material";
+import { Password } from "@mui/icons-material";
 
-export const EditAccountDialog = ({ open, onClose, onSave ,data }) => {
+export const EditAccountDialog = ({ open, onClose, onSave ,userData,updating }) => {
   const [formData, setFormData] = useState({
-    field1: "",
-    field2: "",
+    email:  "",
+    password: "",
+    profile_name: "",
+    role: ""
   });
+
+  useEffect(()=>{
+    setFormData({
+      ...formData,
+      email: userData.email || "",
+      password:"",
+      profile_name:userData.profile_name||"",
+      role: userData.role||""
+    })
+  },[userData])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,7 +33,10 @@ export const EditAccountDialog = ({ open, onClose, onSave ,data }) => {
 
   const handleSave = () => {
     onSave(formData);
-    onClose();
+    setTimeout(()=>{
+      onClose()
+    },2000)
+    console.log(formData)
   };
 
   return (
@@ -31,34 +47,33 @@ export const EditAccountDialog = ({ open, onClose, onSave ,data }) => {
         <TextField
           autoFocus
           label="Email"
-          name="field1"
+          name="email"
           fullWidth
-          disabled
           margin="normal"
-          value={formData.field1}
+          value={formData.email}
           onChange={handleChange}
         />
 
         <TextField
           label="Change Password"
-          name="field2"
+          name="password"
           fullWidth
           margin="normal"
-          value={formData.field2}
+          value={formData.password}
           onChange={handleChange}
         />
 
           <TextField
           label="Name"
-          name="field2"
+          name="profile_name"
           fullWidth
           margin="normal"
-          value={formData.field2}
+          value={formData.profile_name}
           onChange={handleChange}
         />
-        <TextField select fullWidth label="Role">
-          <MenuItem>Admin</MenuItem>
-          <MenuItem>User/Stockman</MenuItem>
+        <TextField select fullWidth label="Role" name="role" value={formData.role} onChange={handleChange}>
+          <MenuItem value="admin">Admin</MenuItem>
+          <MenuItem value="user">User/Stockman</MenuItem>
         </TextField>
       </DialogContent>
 
@@ -66,8 +81,8 @@ export const EditAccountDialog = ({ open, onClose, onSave ,data }) => {
         <Button onClick={onClose} color="secondary" variant="outlined">
           Cancel
         </Button>
-        <Button onClick={handleSave} variant="contained">
-          Save
+        <Button disabled={updating} onClick={handleSave} variant="contained" startIcon={updating?<CircularProgress size={20} color="inherit"/>:null}>
+          {updating?"saving":"Save"}
         </Button>
       </DialogActions>
     </Dialog>

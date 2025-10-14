@@ -1,6 +1,6 @@
 // src/api/createUser.js
 import supabase from "../supabase-client";
-const SUPABASE_FUNCTION_URL = "https://imnlgtapdkmooixgziua.supabase.co/functions/v1/create-user";
+const SUPABASE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-user`;
 
 export async function createUser({ email, password, role, profile_name }) {
   try {

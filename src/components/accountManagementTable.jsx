@@ -1,40 +1,67 @@
 import { ConfirmDeleteCancel } from './modals/confirmDeleteCancel';
 import { EditAccountDialog } from './editAccountDialog';
 import { DataGrid } from '@mui/x-data-grid';
-import { IconButton } from '@mui/material';
+import { IconButton,Snackbar,Alert } from '@mui/material';
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { updateUser } from '../api/updateUser';
+import { deleteUser } from '../api/deleteUser';
 
-export const AccountManagementTable = ({data})=>{
-     const [rows,setRows] = useState([
-    { id: 1, name: 'Edward Perry', age: 25, creationDate: '7/16/2025', department: 'Finance' },
-    { id: 2, name: 'Josephine Drake', age: 36, joinDate: '7/16/2025', department: 'Market' },
-    { id: 3, name: 'Cody Phillips', age: 19, joinDate: '7/16/2025', department: 'Development' },
-  ])
+
+export const AccountManagementTable = ({data,refetch})=>{
+    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
+    const [updating,setUpdating] = useState(false)
+    const [deleteItem,setDeleteItem] = useState(null)
+    const [selectedData,setSelectedData] = useState()
     const [open,setOpen] = useState({
       deleteModal: false,
       editModal:false
     })
-    const [selectedId,setSelectedId] = useState(null)
     const navigate = useNavigate()
-    const handleDeleteButton = (id)=>{
-        setSelectedId(id)
+    const handleDeleteButton = (email)=>{
+
+        const foundUser = data.find(d=>d.email===email)
+        setDeleteItem(foundUser.id)
         setOpen({...open,deleteModal:true})
+        console.log(foundUser)
     }
-    const handleConfirmDeleteButton = ()=>{
+    const handleConfirmDeleteButton = async ()=>{
+        setUpdating(true)
+        const result = await deleteUser(deleteItem)
+        if (result.success){
+          setSnackbar({ open: true, type: "success", message: "account deleted!" });
+          setUpdating(false)
+          refetch()
+        }else setSnackbar({ open: true, type: "error", message: "error deleting account" });
         setOpen({deleteModal:false})
-        setRows((prev)=>prev.filter(row=>row.id!=selectedId))
-        setSelectedId(null)
+        setDeleteItem(null)
     }
     const handleCancelModal = ()=>{
       setOpen({...open,deleteModal:false})
-      setSelectedId(null)
+      setDeleteItem(null)
     }
-    const handleEditDialog = ()=>{
+    const handleEditDialog = (email)=>{
+      const foundUser = data.find(d=>d.email===email)
+      setSelectedData(foundUser)
       setOpen({...open,editModal:true})
+      console.log(foundUser)
+    }
+
+    const handleSave = async (formData)=>{
+      setUpdating(true)
+      const result = await updateUser(selectedData.id,formData.email,formData.password||null,{profile_name:formData.profile_name , role: formData.role})
+
+      if (result.success){
+        
+        setSnackbar({ open: true, type: "success", message: "Updated Successfully" });
+        refetch()
+        setUpdating(false)
+        
+      }else setSnackbar({ open: true, type: "error", message: "error updating account" });
+
     }
     const columns = [
     { field: 'email', headerName: 'Email', flex: 1 },
@@ -48,10 +75,10 @@ export const AccountManagementTable = ({data})=>{
       sortable: false,
       renderCell: (params) => (
         <div className="flex gap-2">
-          <IconButton size="small" color="primary" onClick={()=>handleEditDialog()}>
+          <IconButton size="small" color="primary" onClick={()=>handleEditDialog(params.row.email)}>
             <Edit fontSize="small" />
           </IconButton>
-          <IconButton size="small" color="error" onClick={()=>handleDeleteButton(params.row.id)}>
+          <IconButton size="small" color="error" onClick={()=>handleDeleteButton(params.row.email)}>
             <Delete fontSize="small" />
           </IconButton>
         </div>
@@ -82,9 +109,30 @@ export const AccountManagementTable = ({data})=>{
         disableSelectionOnClick
         />
         {/* Delete Confirmation Dialog */}
-      <ConfirmDeleteCancel  open={open.deleteModal} handleDelete={handleConfirmDeleteButton} handleCancel={handleCancelModal}/>
+      <ConfirmDeleteCancel  open={open.deleteModal} handleDelete={handleConfirmDeleteButton} handleCancel={handleCancelModal} updating={updating}/>
         {/*edit account dialg */ }
-      <EditAccountDialog open={open.editModal} onClose={()=>setOpen({...open,editModal:false})}/>
+      <EditAccountDialog open={open.editModal} onClose={()=>setOpen({...open,editModal:false})} userData={selectedData||{}} onSave={handleSave} updating={updating}/>
+        {/* Snackbar for Success / Error */}
+        <Snackbar
+            open={snackbar.open}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            slotProps={{
+              root: {
+                sx: {
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                },
+              },
+            }}
+            autoHideDuration={3000}
+            onClose={() => setSnackbar({ ...snackbar, open: false })}>
+              <Alert severity={snackbar.type} sx={{ width: "100%" }}>
+                {snackbar.message}
+                </Alert>
+        </Snackbar>
+
 
     </div>
   );

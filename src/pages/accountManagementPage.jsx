@@ -10,9 +10,7 @@ import Box from '@mui/material/Box';
 
 export const AccountManagementPage = ()=>{
     const [data,setData] = useState()
-
-    useEffect(()=>{
-        const fetch = async ()=>{
+    const fetch = async ()=>{
             const {data,error} = await supabase
             .from("users")
             .select("*")
@@ -23,7 +21,8 @@ export const AccountManagementPage = ()=>{
             setData(data)
         };
 
-        }
+    }
+    useEffect(()=>{
 
     fetch()
     },[])
@@ -39,7 +38,7 @@ export const AccountManagementPage = ()=>{
                     <span>Employees</span>
                     <CreateButton customStyle={"max-lg:h-[30px] max-lg:px-2"}/>
                 </div>
-                <AccountManagementTable data={data}/>
+                <AccountManagementTable data={data} refetch={fetch}/>
             </div>
            
            

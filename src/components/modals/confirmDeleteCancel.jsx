@@ -4,7 +4,7 @@ import { IconButton,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button, } from '@mui/material';
+  Button,CircularProgress } from '@mui/material';
 export const ConfirmDeleteCancel = (props)=>{
     return <div>
         <Dialog open={props.open} >
@@ -16,8 +16,8 @@ export const ConfirmDeleteCancel = (props)=>{
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleCancel}>Cancel</Button>
-          <Button  color="error" variant="contained" onClick={()=>props.handleDelete(props.id)}>
-            Delete
+          <Button disabled={props.updating}  color="error" variant="contained" onClick={()=>props.handleDelete(props.id)} startIcon={props.updating?<CircularProgress size={20} color="inherit"/>:null}>
+            {props.updating?"Deleting":"Delete"}
           </Button>
         </DialogActions>
       </Dialog>

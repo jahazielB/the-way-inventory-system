@@ -4,6 +4,7 @@ import { AddItem } from "../components/addItem"
 import supabase from "../supabase-client"
 import { useState } from "react"
 import { createUser } from "../api/createUser"
+import { Snackbar,Alert } from "@mui/material"
 export const CreateAccountPage = ()=>{
     const [formData, setFormData] = useState({
         profile_name: "",
@@ -13,6 +14,7 @@ export const CreateAccountPage = ()=>{
     })
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState("")
+    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
     const [passwordStrength, setPasswordStrength] = useState("");
 
     const location = useLocation()
@@ -50,27 +52,26 @@ export const CreateAccountPage = ()=>{
         const {profile_name,role,email,password} = formData;
 
         if (!profile_name || !email || !password){
-            setMessage("Please fill in all required fields")
+            setSnackbar({ open: true, type: "error", message: "Please fill in all required fields" });
             return
         }
         if(!isValidEmail(email)){
-            setMessage("Please enter a valid email address")
+            setSnackbar({ open: true, type: "error", message: "Please enter a valid email address" });
             return
         }
         if(!isValidPassword(password)){
-            setMessage("Password must be at least 8 characters, include uppercase, lowercase, number, and special character.")
+            setSnackbar({ open: true, type: "error", message: "Password must be at least 8 characters, include uppercase, lowercase, number, and special character." });
             return
         }
         setLoading(true)
-        setMessage("")
         try{
             const res = await createUser({email, password, role, profile_name});
-            setMessage(res.message||"user created successfully")
+            setSnackbar({ open: true, type: "success", message: res.message||"user created successfully" });
             setFormData({ profile_name: "", role: "user", email: "", password: "" })
             setPasswordStrength("")
 
         }catch(err){
-            setMessage(err.message||"Error creating user/admin")
+            setSnackbar({ open: true, type: "error", message: err.message||"Error creating user/admin" });
         }finally{
             setLoading(false)
         }
@@ -120,7 +121,7 @@ export const CreateAccountPage = ()=>{
                             </div>
                             <button disabled={loading} className="w-[clamp(100px,70vw,350px)] md:h-[50px] md:w-full h-[40px] lg:h-[55px] xl:h-[65px] bg-blue-600 rounded-2xl text-white hover:bg-[rgba(37,99,235,.8)]
                          active:bg-[rgba(12,51,137,0.8)] active:scale-99">{loading?"creating...": "Create Account"}</button>
-                            {message && <p className="text-center text-sm mt-2">{message}</p>}
+                            {/* {message && <p className="text-center text-sm mt-2">{message}</p>} */}
                             </form>
                             
                         </div>):<AddItem/>}
@@ -131,7 +132,26 @@ export const CreateAccountPage = ()=>{
                    
                     
                 </div>
-                
+                {/* Snackbar for Success / Error */}
+                    <Snackbar
+                            open={snackbar.open}
+                            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                            slotProps={{
+                              root: {
+                                sx: {
+                                  position: "fixed",
+                                  top: "50%",
+                                  left: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                },
+                              },
+                            }}
+                            autoHideDuration={3000}
+                            onClose={() => setSnackbar({ ...snackbar, open: false })}>
+                              <Alert severity={snackbar.type} sx={{ width: "100%" }}>
+                                {snackbar.message}
+                                </Alert>
+                    </Snackbar>
             </div>
     )
 }
