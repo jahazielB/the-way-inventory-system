@@ -49,8 +49,8 @@ export const router = createBrowserRouter([
         {path: "/accounts/create", element: <CreateAccountPage/>},
         {path: "/inventory/addItem", element: <CreateAccountPage/>},
         {path: "/accounts/edit", element: <EditAccountPage/>},
-        {path: "/inventory/replenishItems", element: <ReplenishReleasePage mode={'Replenish Items'}/>},
-        {path: "/inventory/releaseItems", element: <ReplenishReleasePage mode={'Release Items'}/>},
+        {path: "/inventory/replenishItems", element: <ReplenishReleasePage mode={'Replenish'}/>},
+        {path: "/inventory/releaseItems", element: <ReplenishReleasePage mode={'Release'}/>},
         {path: "/notifications", element: <NotificationsPage/>},
         {path: "notifications/approval", element: <ApprovalPage/>}
     ],

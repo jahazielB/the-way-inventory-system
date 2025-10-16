@@ -1,19 +1,28 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
+import supabase from '../supabase-client';
 
-export const ReportTable = ()=>{
+
+
+export const ReportTable = ({project_name,data,mode})=>{
+
+
+    const stockInOutData = data?.flatMap(item=>mode === "stock_out"? item.stock_out : item.stock_in) || []
+
+
     const rows = [{ id: 1, item: 'MG Spoons',  date: '7/16/2025', unit: '486 pcs' },
     { id: 2, item: 'Beads',  date: '7/16/2025', unit: '9528 pcs' },
     { id: 3, item: 'Clevis',  date: '7/16/2025', unit: '1104 pcs' }]
 
     const columns = [
-    { field: 'item', headerName: 'Item', flex: 1 },
-    { field: 'date', headerName: 'Date', width: 120 },
-    { field: 'unit', headerName: 'Unit', flex: 1 },
+    { field: 'item_name', headerName: 'Item', flex: 1 },
+    { field: mode === "stock_out"?'stock_out_date':"stock_date", headerName: 'Date', flex:1 },
+    { field: 'quantity', headerName: 'Unit', flex: 1 },
+    { field: mode === "stock_out"?"used_by":"received_by", headerName:mode === "stock_out"?"released_by":"received_by", flex:1},
     {
       field: 'actions',
-      headerName: '',
+      headerName: 'actions',
       width: 120,
       sortable: false,
       renderCell: (params) => (
@@ -31,7 +40,7 @@ export const ReportTable = ()=>{
   return(
     <div className='h-[500px] md:h-[clamp(450px,60vh,2000px)]  min-w-[200px] md:w-[600px] lg:w-[clamp(700px,70vw,2000px)]   shadow-2xl'>
                     <div className="flex justify-between items-center px-2 py-2 bg-gray-50">
-                        <span>Warrior Lures</span>
+                        <span>{project_name}</span>
                         <div>
                             {/* <BasicDatePicker/> */}
                             <IconButton size="small">
@@ -43,7 +52,7 @@ export const ReportTable = ()=>{
                         </div>
                     </div>
                     <DataGrid
-                        rows={rows}
+                        rows={stockInOutData}
                         columns={columns}
                         pageSize={10}
                         rowsPerPageOptions={[10]}

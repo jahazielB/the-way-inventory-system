@@ -1,17 +1,21 @@
 import { useState } from "react"
 import { useNavigate,useLocation,Link } from "react-router-dom"
 import supabase from "../supabase-client"
+import useAuthStore from "../store/useAuthStore"
 
 export const Sidebar = ({data})=>{
+
     const navigate = useNavigate()
     const [isOpen,setIsOpen] = useState(false)
     const location = useLocation()
     const temporaryHandleClick = (menu)=>{
         navigate(`/${menu}`)
-        console.log('clicked')
+        
     }
+    const clearUser = useAuthStore(state=>state.clearUser)
     const handleLogout = async () => {
       await supabase.auth.signOut();
+      clearUser()
       window.location.href = "/login";
     };
 

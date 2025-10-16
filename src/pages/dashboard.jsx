@@ -3,22 +3,25 @@ import { Chart } from "../components/chart"
 import { ProjectPreview } from "../components/projectPreview"
 import { useEffect, useState } from "react"
 import supabase from "../supabase-client"
+import useAuthStore from "../store/useAuthStore"
 export const Dashboard = ()=>{
     const [data,setData]=useState([])
     const [admin,setAdmin] = useState(null)
+    const setUser = useAuthStore((state)=>state.setUser)
     const fetchUser = async ()=>{
         const {data:{user}} = await supabase.auth.getUser()
         if (!user) return;
-        console.log("current user: " ,user)
+        // console.log("current user: " ,user)
 
         const {data ,error} = await supabase
             .from("users")
-            .select("profile_name")
+            .select("profile_name,role")
             .eq("id",user.id)
             .single();
         if (error) console.error
         else {
             setAdmin(data)
+            setUser(data)
             console.log(data)
         }
     }
