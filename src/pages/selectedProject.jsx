@@ -30,7 +30,7 @@ export const SelectedProject = ()=>{
   useEffect(()=>{
     fetchData()
     console.log(project_name)
-  },[])
+  },[mode])
 
     return <div className="md:flex gap-1 ">
             <Sidebar/>
