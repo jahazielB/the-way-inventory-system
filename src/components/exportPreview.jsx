@@ -15,6 +15,7 @@ export const ExportPreview = ({ data, filename = "Data.xlsx" }) => {
 
   return (
     <div className="flex flex-col">
+      <span>{filename}</span>
       <button
         onClick={handleDownload}
         className="bg-green-500 text-white px-3 py-1 rounded mb-2 self-start active:bg-amber-300 hover:bg-green-700"

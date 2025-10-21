@@ -3,6 +3,7 @@ import { EditAccountDialog } from './editAccountDialog';
 import { DataGrid } from '@mui/x-data-grid';
 import { IconButton,Snackbar,Alert } from '@mui/material';
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
+import { format } from "date-fns";
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -66,7 +67,11 @@ export const AccountManagementTable = ({data,refetch})=>{
     const columns = [
     { field: 'email', headerName: 'Email', flex: 1 },
     { field: 'role', headerName: 'Role', width: 120 },
-    { field: 'created_at', headerName: 'Creation date', flex:1 },
+    { field: 'created_at', headerName: 'Creation date', flex:1,valueFormatter:(p)=>{
+      if(!p) return "error fetching date"
+      const date = p
+      return format(date , "MMM dd, yyyy")
+    } },
     { field: 'profile_name', headerName: 'Name', width:150 },
     {
       field: 'actions',

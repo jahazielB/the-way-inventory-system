@@ -2,18 +2,22 @@ import { DataGrid } from '@mui/x-data-grid';
 import { IconButton,DialogTitle,Dialog,DialogContent,DialogActions,TextField,Button,CircularProgress,Snackbar,Alert } from '@mui/material';
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 import supabase from '../supabase-client';
+import { format } from "date-fns";
 
 import { ConfirmDeleteCancel } from './modals/confirmDeleteCancel';
+import { ExportPreview } from './exportPreview';
 
 import { useState } from 'react';
 
 
 
-export const ReportTable = ({project_name,data,mode})=>{
+
+export const ReportTable = ({project_name,data,mode,reportMode,infoDate,exportOpen,setExportOpen})=>{
 
     const [open,setOpen]= useState({
       deleteModal: false,
-      editModal:false
+      editModal:false,
+      
     })
     const [updating,setUpdating] = useState(false)
     const [selectedItem,setSelectedItem]= useState({
@@ -22,7 +26,27 @@ export const ReportTable = ({project_name,data,mode})=>{
     })
     const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
 
-    const stockInOutData = data?.flatMap(item=>mode === "stock_out"? item.stock_out : item.stock_in) || []
+    const stockInOutData = (() => {
+      if (!data) return [];
+
+      // Flatten the stock_in / stock_out arrays depending on mode
+      const flatData = data.flatMap(item => (mode === "stock_out" ? item.stock_out : item.stock_in));
+
+      // If in summary mode, aggregate quantities per item
+      if (reportMode === "summary") {
+        const summaryMap = flatData.reduce((acc, row) => {
+          const key = row.item_name;
+          if (!acc[key]) acc[key] = { ...row, quantity: 0 }; // keep first row as base
+          acc[key].quantity += row.quantity; // aggregate quantity
+          return acc;
+        }, {});
+
+        return Object.values(summaryMap);
+      }
+
+      // Normal mode, just return flattened data
+      return flatData;
+    })();
 
     const handleConfirmDelete = async()=>{
         const {data,error}= await supabase
@@ -56,6 +80,35 @@ export const ReportTable = ({project_name,data,mode})=>{
       
     }
 
+      // --- Download Preview logic ---
+const exportData = stockInOutData.map(row => {
+  const filter = infoDate[0]; // take the current date filter
+  let dateText = "";
+
+  if (reportMode === "summary") {
+    if (!filter || (!filter.selectedDate && (!filter.dateRange?.start || !filter.dateRange?.end))) {
+      dateText = "From the beginning";
+    } else if (filter.dateMode === "single" && filter.selectedDate) {
+      dateText = format(filter.selectedDate, "MMM dd, yyyy");
+    } else if (filter.dateMode === "range" && filter.dateRange?.start && filter.dateRange?.end) {
+      dateText = `${format(filter.dateRange.start, "MMM dd, yyyy")} - ${format(filter.dateRange.end, "MMM dd, yyyy")}`;
+    }
+  } else {
+    // Normal mode, just use the row date
+    dateText = mode === "stock_out" ? row.stock_out_date : row.stock_date;
+  }
+
+  return {
+    Item: row.item_name,
+    Date: dateText,
+    Quantity: row.quantity,
+    Unit: row.unit,
+    ...(mode === "stock_out"
+      ? { Released_By: row.used_by || "-" }
+      : { Received_By: row.received_by || "-" })
+  };
+});
+
     const saveButton = async ()=>{
       setUpdating(true)
       const  {data,error} = await supabase
@@ -73,10 +126,15 @@ export const ReportTable = ({project_name,data,mode})=>{
   
     }}
 
-    const columns = [
+    const columns = reportMode === "detailed"?[
     { field: 'item_name', headerName: 'Item', flex: 1 },
-    { field: mode === "stock_out"?'stock_out_date':"stock_date", headerName: 'Date', flex:1 },
-    { field: 'quantity', headerName: 'Unit', flex: 1 },
+    { field: mode === "stock_out"?'stock_out_date':"stock_date", headerName: 'Date', flex:1,valueFormatter:(params)=>{
+      if(!params) return "error fetching date"
+      const date = new Date(params)
+      return format(date, "MMM dd, yyyy")
+    } },
+    { field: 'quantity', headerName: 'Quantity', flex: 1 },
+    { field: 'unit', headerName: 'Unit', flex: 1 },
     { field: mode === "stock_out"?"used_by":"received_by", headerName:mode === "stock_out"?"released_by":"received_by", flex:1},
     {
       field: 'actions',
@@ -94,18 +152,17 @@ export const ReportTable = ({project_name,data,mode})=>{
         </div>
       ),
     },
-  ];
+  ]:[{ field: 'item_name', headerName: 'Item', flex: 1 },{ field: 'quantity', headerName: 'Quantity', flex: 1 },] ;
   return(
     <div className='h-[500px] md:h-[clamp(450px,60vh,2000px)]  min-w-[200px] md:w-[600px] lg:w-[clamp(700px,70vw,2000px)]   shadow-2xl'>
                     <div className="flex justify-between items-center px-2 py-2 bg-gray-50">
                         <span>{project_name}</span>
+                        {reportMode==="summary"&&infoDate.map((p,i)=>p.dateMode==="single"?(<span key={i}>{p.selectedDate?(format(p.selectedDate,"MMM dd, yyyy")):""}</span>)
+                        :(<span key={i}>{p.dateRange?.start?(format(p.dateRange.start,"MMM dd, yyyy")):""} - {p.dateRange?.end?(format(p.dateRange.end,"MMM dd, yyyy")):""}</span>))}
                         <div>
                             {/* <BasicDatePicker/> */}
-                            <IconButton size="small">
+                            <IconButton size="small" onClick={()=>setExportOpen(true)}>
                             <Download />
-                            </IconButton>
-                            <IconButton size="small">
-                            <Search />
                             </IconButton>
                         </div>
                     </div>
@@ -154,7 +211,21 @@ export const ReportTable = ({project_name,data,mode})=>{
                 {snackbar.message}
              </Alert>
          </Snackbar>
-
+      {/* Export Preview Dialog */}
+        <Dialog
+          open={exportOpen}
+          onClose={() => setExportOpen(false)}
+          maxWidth="lg"
+          fullWidth
+        >
+          <DialogTitle>Export Preview</DialogTitle>
+          <DialogContent>
+            <ExportPreview data={exportData} filename={`Project_Report_${project_name}_${mode}.xlsx`} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setExportOpen(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
     </div>
   )
 }
