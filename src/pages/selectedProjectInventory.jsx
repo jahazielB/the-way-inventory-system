@@ -30,9 +30,10 @@ export const SelectedProjectInventory = ()=>{
     const handleExportClick = async ()=>{
         setPreviewOpen(true)
         try{
-            const { data, error } = await supabase
+            const query =  supabase
                     .from("item_summary")
                     .select("*");
+            const {data,error} = await (customer_name?query.ilike("customers",`%${customer_name}%`):query)
             if (error) throw error;
             setExportData(data);
             console.log("clicked")
@@ -126,7 +127,7 @@ export const SelectedProjectInventory = ()=>{
                         </IconButton>
                         </DialogTitle>
                         <DialogContent>
-                        {exportData && <ExportPreview data={exportData} filename="GeneralItems.xlsx" />}
+                        {exportData && <ExportPreview data={exportData} filename={customer_name?`${customer_name}_items_used.xlsx`:"GeneralItems.xlsx"} />}
                         </DialogContent>
                     </Dialog>
                 </div>

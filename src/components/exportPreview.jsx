@@ -1,12 +1,27 @@
 // ExportPreview.jsx
 import * as XLSX from "xlsx";
+import { useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
 
 export const ExportPreview = ({ data, filename = "Data.xlsx" }) => {
-  const handleDownload = () => {
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    XLSX.writeFile(wb, filename);
+  const [loading, setLoading] = useState(false);
+
+  const handleDownload = async () => {
+    setLoading(true); // start loading
+
+    try {
+      // Simulate async operation in case data is large
+      await new Promise((resolve) => setTimeout(resolve, 100)); 
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.writeFile(wb, filename);
+    } catch (error) {
+      console.error("Download failed:", error);
+    } finally {
+      setLoading(false); // stop loading
+    }
   };
 
   if (!data || data.length === 0) return <p>No data to preview</p>;
@@ -16,12 +31,16 @@ export const ExportPreview = ({ data, filename = "Data.xlsx" }) => {
   return (
     <div className="flex flex-col">
       <span>{filename}</span>
-      <button
+      <Button
         onClick={handleDownload}
-        className="bg-green-500 text-white px-3 py-1 rounded mb-2 self-start active:bg-amber-300 hover:bg-green-700"
+        variant="contained"
+        color="success"
+        disabled={loading} // disable button while loading
+        startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null} // show spinner
+        className="mb-2 self-start"
       >
-        Download Excel
-      </button>
+        {loading ? "Downloading..." : "Download Excel"}
+      </Button>
 
       <div className="overflow-auto max-h-[500px] border rounded bg-white">
         <table className="table-auto w-full border-collapse border border-gray-300">
