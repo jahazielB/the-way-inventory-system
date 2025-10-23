@@ -3,7 +3,7 @@ import { SearchBar } from "../components/searchBar"
 import { ReplenishButton } from "../components/buttons/replenishButton"
 import { ReleaseButton } from "../components/buttons/releaseButton"
 import { ExportExcelButton } from "../components/buttons/exportExcel"
-import { Button,Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import { Button,Dialog, DialogTitle, DialogContent, IconButton,Box,CircularProgress } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { ExportPreview } from "../components/exportPreview"
@@ -22,6 +22,7 @@ export const SelectedProjectInventory = ()=>{
     const {customer_name} = useParams()
     const [exportData, setExportData] = useState(null);
     const [previewOpen,setPreviewOpen] = useState(false)
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate()
     
     const from = (page - 1) * rowsPerPage
@@ -56,7 +57,7 @@ export const SelectedProjectInventory = ()=>{
         setData(items);
         setTotal(count);
         
-    }
+    }setLoading(false)
     }
     const handleSearch = (e) => {
         if (e.key === "Enter") {
@@ -81,6 +82,7 @@ export const SelectedProjectInventory = ()=>{
         setTotal(count)
         console.log(data)
         }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -102,7 +104,10 @@ export const SelectedProjectInventory = ()=>{
                 <div className="text-center text-blue-600 font-bold">
                     <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
                 </div>
-                <div>
+                {loading?(<Box className="flex justify-center items-center h-[80vh]">
+                    <CircularProgress />
+                </Box>
+                ):(<div>
                     <div className="flex justify-evenly lg:justify-between  mb-2">
                         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} onKeyDown={handleSearch}/>
                         <div className="flex gap-0 lg:gap-2">
@@ -130,7 +135,7 @@ export const SelectedProjectInventory = ()=>{
                         {exportData && <ExportPreview data={exportData} filename={customer_name?`${customer_name}_items_used.xlsx`:"GeneralItems.xlsx"} />}
                         </DialogContent>
                     </Dialog>
-                </div>
+                </div>)}
                 
                 
                 

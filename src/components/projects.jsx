@@ -1,14 +1,21 @@
 import { useNavigate,useLocation } from "react-router-dom"
 import { useState,useEffect } from "react"
 import supabase from "../supabase-client"
+import {
+  Box,
+  CircularProgress,
+} from "@mui/material";
 
 
 export const Projects = ({handleClick,handleGeneralClick})=>{
+    const [loading,setLoading] = useState(false) 
     const [data,setData] = useState([])
     const fetch = async()=>{
+            setLoading(true)
             const {data,error} = await supabase.from('customers').select('*')
             if (error) console.error(error)
             else setData(data) 
+            setLoading(false)
             console.log(data)
         }
     useEffect(()=>{
@@ -16,6 +23,13 @@ export const Projects = ({handleClick,handleGeneralClick})=>{
     },[])
     const location = useLocation()
     const navigate = useNavigate();
+    if (loading) {
+    return (
+      <Box className="flex justify-center items-center h-[80vh]">
+        <CircularProgress />
+      </Box>
+    );
+  }
     return  (<div className=" flex flex-col justify-center items-center gap-3.5 h-fit lg:grid lg:grid-cols-[minmax(200px,350px)_minmax(200px,350px)] xl:gap-[20px] rounded-2xl  max-w-full " >
                 {location.pathname==='/inventory'&&<div className="flex w-full  h-[80px] max-sm:h-[60px]  bg-white rounded-[10px] p-5 max-sm:p-3 hover:bg-[rgba(233,223,195,.7)]
                  active:bg-amber-200 active:scale-97  shadow-2xl" onClick={()=>navigate("/inventory/item_summary")}>
