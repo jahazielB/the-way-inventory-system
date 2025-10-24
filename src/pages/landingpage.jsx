@@ -22,7 +22,7 @@ const LandingPage = ()=>{
             const {error:otpError} = await supabase.auth.signInWithOtp({
                 email,
                 options:{
-                    emailRedirectTo: `https://localhost:5173/auth/callback`  
+                    emailRedirectTo: `https://192.168.68.101:5173/auth/callback`  
                 }
             })
 
