@@ -17,8 +17,7 @@ export const StockManPage = () => {
   const [user,setUser] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null);
   const containerRef = useRef(null);
-  const [inventoryMenuEl, setInventoryMenuEl] = useState(null);
-  const inventoryMenuOpen = Boolean(inventoryMenuEl);
+
 
   const ITEMS_PER_PAGE = 5;
   const open = Boolean(anchorEl);
@@ -127,41 +126,10 @@ export const StockManPage = () => {
                 <ListItemText>Logout</ListItemText>
             </MenuItem>
             </Menu>
-          <IconButton color="primary"  onClick={(event) => setInventoryMenuEl(event.currentTarget)}>
+          <IconButton color="primary"  onClick={() => navigate('/user/ReleaseOrReplenish')}>
             <Inventory />
           </IconButton>
-          <Menu
-            anchorEl={inventoryMenuEl}
-            open={inventoryMenuOpen}
-            onClose={() => setInventoryMenuEl(null)}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "right" }}
-            sx={{ mt: 1 }}
-            >
-            <MenuItem
-                onClick={() => {
-                setInventoryMenuEl(null);
-                navigate("/user/userReplenish"); // or your replenish page
-                }}
-            >
-                <ListItemIcon>
-                <MoveToInbox fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Replenish</ListItemText>
-            </MenuItem>
 
-            <MenuItem
-                onClick={() => {
-                setInventoryMenuEl(null);
-                navigate("/user/userRelease"); // or your release page
-                }}
-            >
-                <ListItemIcon>
-                <Outbox fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Release</ListItemText>
-            </MenuItem>
-        </Menu>
         </div>
       </div>
 
