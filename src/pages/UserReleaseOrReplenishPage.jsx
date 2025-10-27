@@ -1,4 +1,4 @@
-import { useState,useRef } from "react";
+import { useState,useRef, useEffect } from "react";
 import {
   Button,
   Popover,
@@ -12,6 +12,7 @@ import { BarcodeScanner } from "../components/BarcodeScanner";
 import { QrCodeScanner } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import supabase from "../supabase-client";
+import { Link } from "react-router-dom";
 
 
 export const UserReleaseReplenishPage = () => {
@@ -23,14 +24,34 @@ export const UserReleaseReplenishPage = () => {
     type: "success",
     message: "",
   });
-  const [mode, setMode] = useState("replenish"); // toggle between modes
+  const [mode, setMode] = useState("release"); // toggle between modes
   const [cooldown, setCooldown] = useState(false);
   const [addedItems, setAddedItems] = useState([]);
   const [options, setOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    autoComplete: false,
+    submitButton:false
+  });
   const [selectedItem, setSelectedItem] = useState(null);
+  const [userData,setUserData]= useState()
   
+  const fetchUser = async ()=>{
+          const {data:{user}} = await supabase.auth.getUser()
+          if (!user) return;
+          // console.log("current user: " ,user)
   
+          const {data ,error} = await supabase
+              .from("users")
+              .select("profile_name,role,id")
+              .eq("id",user.id)
+              .single();
+          if (error) console.error
+          else {
+              setUserData(data)
+              console.log(data)
+          }
+      }
+
   const handleSearch = async (query) => {
     if (!query) return;
     setLoading(true);
@@ -71,7 +92,7 @@ export const UserReleaseReplenishPage = () => {
 
       setAddedItems((prev) => [
             ...prev,
-           { id: Date.now(), item: data.item_name, item_id:data.item_id,mode:mode==="replenish"?"stock_in":"stock_out"},
+           { id: Date.now(), item: data.item_name, item_id:data.item_id,mode:mode==="replenish"?"stock_in":"stock_out" ,userId:userData.id },
              ]);
     
 
@@ -100,7 +121,7 @@ export const UserReleaseReplenishPage = () => {
    const columns = [
     { field: "item_id", headerName: "Item ID"},
     { field: "item", headerName: "Item", flex: 1 },
-    { field: "unit", headerName: "Quantity", flex: 1,editable:true,renderEditCell: (params) => (
+    { field: "quantity", headerName: "Quantity", flex: 1,editable:true,renderEditCell: (params) => (
     <TextField
       type="number"
       size="small"
@@ -148,14 +169,45 @@ export const UserReleaseReplenishPage = () => {
 
     return newRow; // required
   };
+  const submitForApproval = async (addedData)=>{
+    setLoading({...loading,submitButton:true})
+    const formattedData = addedData.map((data)=>({
+      item_id:data.item_id,
+      requested_by:data.userId,
+      quantity:data.quantity?data.quantity:0,
+      action_type:data.mode,
+      status: "pending"
 
+    }))
+    const {data,error} = await supabase
+      .from("approvals")
+      .insert(formattedData)
+      .select();
 
+    if (error){
+      console.error("error: ", error)
+      setSnackbar({  open: true,
+                    type: "error",
+                    message: "Error Inserting data",})
+    }else{
+      setAddedItems([])
+      setLoading({...loading,submitButton:false})
+      setSnackbar({  open: true,
+                    type: "success",
+                    message: "Success",})
+    }
+
+  }
+
+  useEffect(()=>{
+    fetchUser()
+  },[])
   return (
     <div className="relative p-4.5 min-h-screen bg-gray-50 ">
       {/* Header */}
       <div className="flex justify-between mb-4">
         <div className="text-blue-700 flex flex-col">
-          <span className="text-[15px] font-black">THE WAY</span>
+          <Link to="/user"><span className="text-[15px] font-black cursor-pointer">THE WAY</span></Link>
           <span className="text-[10px] text-black">***For Admin Approval</span>
         </div>
 
@@ -217,15 +269,14 @@ export const UserReleaseReplenishPage = () => {
               <div className="flex  justify-between mt-6">
                 <Button
                   variant="contained"
-                  onClick={() => console.log(addedItems)}
-                  // disabled={scanning}
+                  onClick={() => submitForApproval(addedItems)}
+                  disabled={loading.submitButton}
                 >
-                  Submit
+                 {loading.submitButton?(<CircularProgress color="inherit" size={16}/>,"Submitting..."):"Submit"}
                 </Button>
                 <Button
                   variant="outlined"
-                  // onClick={() => setScanning(false)}
-                  // disabled={!scanning}
+                  onClick={() => setAddedItems([])}   
                 >
                   Back
                 </Button>
@@ -266,9 +317,9 @@ export const UserReleaseReplenishPage = () => {
                   e.preventDefault();
                  const itemName = selectedItem?.name || selectedItem || "";
                  const itemId = selectedItem?.id || null;
-                  const unit = e.target.unit.value.trim();
+                  const quantity = e.target.quantity.value.trim();
                   console.log(options)
-                  if (!itemName || !unit) {
+                  if (!itemName || !quantity) {
                     setSnackbar({
                       open: true,
                       type: "error",
@@ -276,10 +327,18 @@ export const UserReleaseReplenishPage = () => {
                     });
                     return;
                   }
+                  if (addedItems.some((i) => i.item.toLowerCase() === itemName.toLowerCase())) {
+                  setSnackbar({
+                    open: true,
+                    type: "error",
+                    message: "This item already exists in the table.",
+                  });
+                  return;
+                }
 
                   setAddedItems((prev) => [
                     ...prev,
-                    { id: Date.now(),item_id:itemId, item: itemName, unit,mode:mode==="replenish"?"stock_in":"stock_out" },
+                    { id: Date.now(),item_id:itemId, item: itemName, quantity,mode:mode==="replenish"?"stock_in":"stock_out",userId:userData.id},
                   ]);
 
                   e.target.reset();
@@ -301,7 +360,7 @@ export const UserReleaseReplenishPage = () => {
                     onInputChange={(e, newInput) => {
                       if (newInput.length >= 2) handleSearch(newInput);
                     }}
-                    loading={loading}
+                    loading={loading.autoComplete}
                     openOnFocus
                     renderInput={(params) => (
                       <TextField
@@ -313,7 +372,7 @@ export const UserReleaseReplenishPage = () => {
                           ...params.InputProps,
                           endAdornment: (
                             <>
-                              {loading ? <CircularProgress color="inherit" size={16} /> : null}
+                              {loading.autoComplete ? <CircularProgress color="inherit" size={16} /> : null}
                               {params.InputProps.endAdornment}
                             </>
                           ),
@@ -323,8 +382,8 @@ export const UserReleaseReplenishPage = () => {
                   />
 
                   <TextField
-                    label="Unit"
-                    name="unit"
+                    label="Value"
+                    name="quantity"
                     variant="outlined"
                     size="small"
                   />

@@ -56,9 +56,9 @@ export const AddItem = ()=>{
         p_action: "insert",
         p_item_name: formData.item_name,
         p_unit: formData.unit,
-        p_opening_stock: formData.opening_stock ? parseInt(formData.opening_stock) : 0,
-        p_reorder_point: formData.reorder_point ? parseInt(formData.reorder_point) : 0,
-        p_reorder_quantity: formData.reorder_quantity ? parseInt(formData.reorder_quantity) : 0,
+        p_opening_stock: formData.opening_stock ? parseFloat(formData.opening_stock) : 0,
+        p_reorder_point: formData.reorder_point ? parseFloat(formData.reorder_point) : 0,
+        p_reorder_quantity: formData.reorder_quantity ? parseFloat(formData.reorder_quantity) : 0,
         p_location_id: formData.location_id ? parseInt(formData.location_id) : null,
         p_customer_ids: formData.customer_ids?.map((id) => parseInt(id)) || [], // multiple customers
     });

@@ -8,30 +8,55 @@ import supabase from "../supabase-client";
 
 export const StockManPage = () => {
   const navigate = useNavigate();
-
-  // Mock data (temporary)
   const [lowStockItems, setLowStockItems] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [user,setUser] = useState(null)
   const [anchorEl, setAnchorEl] = useState(null);
+  const [fetchedRequest,setFetchedRequest] = useState([])
   const containerRef = useRef(null);
 
 
   const ITEMS_PER_PAGE = 5;
   const open = Boolean(anchorEl);
 
+  const getCurrentUser = async () => {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
+  return user;
+};
+
   const fetchUser = async ()=>{
-    const {data:{user}} = await supabase.auth.getUser()
+    const user = await getCurrentUser();
     if (!user) return;
     const {data,error} = await supabase
         .from("users")
-        .select("profile_name,role")
+        .select("profile_name,role,id")
         .eq("id",user.id)
         .single();
     if (error) console.error(error)
-    else setUser(data)
+    else {
+    setUser(data)
+    
+   
+}
+  }
+  const fetchRequest = async ()=>{
+    const user = await getCurrentUser();
+    if (!user) return;
+    const {data:approvals_view,error} = await supabase
+        .from('approvals_view')
+        .select("item_name,quantity,unit,action_type,status")
+        .eq("requested_by",user.id);
+    if (error) console.error("error: ", error)
+    else {
+    console.log(approvals_view)
+    setFetchedRequest(approvals_view)
+}
   }
 
   // 🔹 Fetch low stock items from Supabase
@@ -68,6 +93,7 @@ export const StockManPage = () => {
   useEffect(() => {
     fetchLowStock(page);
     fetchUser()
+    fetchRequest()
   }, [page]);
 
   // 🔹 Detect scroll bottom
@@ -91,6 +117,9 @@ export const StockManPage = () => {
   const myRequests = [
     { item_name: "Torpedo Divers", action_type: "stock_out", quantity: 20, status: "pending" },
     { item_name: "Warrior Lures", action_type: "stock_in", quantity: 50, status: "approved" },
+    { item_name: "Warrior Lures", action_type: "stock_in", quantity: 50, status: "approved" },
+    { item_name: "Warrior Lures", action_type: "stock_in", quantity: 50, status: "approved" },
+    { item_name: "Warrior Lures", action_type: "stock_in", quantity: 50, status: "approved" }
   ];
    const handleLogout = async () => {
         await supabase.auth.signOut();
@@ -209,24 +238,24 @@ export const StockManPage = () => {
 
         {/* APPROVAL REQUESTS CARD */}
         <Card sx={{ flex: 1, borderRadius: 3, boxShadow: 2, backdropFilter: "blur(3px)" }}>
-          <CardContent>
+          <CardContent >
             <div className="flex justify-between items-center mb-2">
               <Typography variant="h9" color="primary">
                 My Approval Requests
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {myRequests.length} request{myRequests.length !== 1 ? "s" : ""}
+                {fetchedRequest.length} request{fetchedRequest.length !== 1 ? "s" : ""}
               </Typography>
             </div>
-            <Divider sx={{ mb: 2 }} />
+            <Divider sx={{ mb: 1 }} />
 
-            {myRequests.length === 0 ? (
+            {fetchedRequest.length === 0 ? (
               <Typography variant="body2" color="text.secondary" fontStyle="italic">
                 No requests submitted yet
               </Typography>
             ) : (
-              <Stack spacing={1.5}>
-                {myRequests.map((r, i) => (
+              <Stack sx={{ maxHeight: 200, overflowY: "auto" }} spacing={1.1}>
+                {fetchedRequest.map((r, i) => (
                   <Box
                     key={i}
                     display="flex"
@@ -243,7 +272,7 @@ export const StockManPage = () => {
                     <Box>
                       <Typography fontWeight={500}>{r.item_name}</Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {r.action_type === "stock_in" ? "Stock In" : "Stock Out"} – {r.quantity} pcs
+                        {r.action_type} – {r.quantity} {r.unit}
                       </Typography>
                     </Box>
                     <Chip

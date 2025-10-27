@@ -61,31 +61,68 @@ export const ReplenishReleasePage = ({mode})=>{
         }
     };
 
-    const handleSubmit =async (e)=>{
-        setLoading(true)
-        e.preventDefault()
-        const {data,error} = await supabase.rpc("manage_item",{
-            p_action: mode==="Replenish"?"stock_in":"stock_out",
-            p_item_id:selectedItem.item_id,
-            p_quantity:selectedItem.quantity?parseInt(selectedItem.quantity):0,
-            ...(mode === "Replenish"
-        ? { p_received_by: `${user.role} - ${user.profile_name}` }
-        : { p_used_by: `${user.role} - ${user.profile_name}` }),
-        })
-        if (error) {
-            setSnackbar({ open: true, type: "error", message: "Something went wrong" })
-            setLoading(false)
-            console.error(error)
-        }else {
-            setSnackbar({ open: true, type: "success", message: mode==="Replenish"?"Stock in Success":"Stock out Success" })
-            setSelectedItem({
-                name:"",
-                item_id:"",
-                quantity:""
-            })
-            setLoading(false)
+   const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        // 1️⃣ Get latest stock balance from your item_summary view
+        const { data: summaryData, error: fetchError } = await supabase
+            .from("item_summary")
+            .select("balance")
+            .eq("item_id", selectedItem.item_id)
+            .single();
+
+        if (fetchError) {
+            console.error(fetchError);
+            setSnackbar({ open: true, type: "error", message: "Failed to fetch current stock balance" });
+            setLoading(false);
+            return;
         }
-    }
+
+        const currentStock = parseFloat(summaryData?.balance) || 0;
+        const requestQty = parseFloat(selectedItem.quantity) || 0;
+        
+
+        // 2️⃣ Prevent stock_out greater than current stock
+        if (mode === "Release" && requestQty > currentStock) {
+            setSnackbar({
+            open: true,
+            type: "error",
+            message: `Cannot stock out more than current stock (${currentStock}).`,
+            });
+            setLoading(false);
+            return; // stop execution
+        }
+
+        // 3️⃣ Proceed with RPC call
+        const { data, error } = await supabase.rpc("manage_item", {
+            p_action: mode === "Replenish" ? "stock_in" : "stock_out",
+            p_item_id: selectedItem.item_id,
+            p_quantity: requestQty,
+            ...(mode === "Replenish"
+            ? { p_received_by: `${user.role} - ${user.profile_name}` }
+            : { p_used_by: `${user.role} - ${user.profile_name}` }),
+        });
+
+        if (error) {
+            console.error(error);
+            setSnackbar({ open: true, type: "error", message: "Something went wrong" });
+        } else {
+            setSnackbar({
+            open: true,
+            type: "success",
+            message: mode === "Replenish" ? "Stock in Success" : "Stock out Success",
+            });
+            setSelectedItem({
+            name: "",
+            item_id: "",
+            quantity: "",
+            });
+        }
+
+        setLoading(false);
+    };
+
     return (
         <div className="lg:flex ">
             <Sidebar/>

@@ -62,7 +62,7 @@ export const InventoryTable = ({data,rows,pages,total,refetch}) => {
         p_item_name: selectedItem.item_name,
         p_unit: selectedItem.unit,
         p_opening_stock: selectedItem.opening_stock
-          ? parseInt(selectedItem.opening_stock)
+          ? parseFloat(selectedItem.opening_stock)
           : 0,
         p_reorder_point: selectedItem.reorder_point
           ? parseInt(selectedItem.reorder_point)
@@ -243,7 +243,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
       onChange={(e) =>
         setSelectedItem({
           ...selectedItem,
-          opening_stock: parseInt(e.target.value) || 0,
+          opening_stock: parseFloat(e.target.value) || 0,
         })
       }
     />
@@ -260,19 +260,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         })
       }
     />
-    <TextField
-      fullWidth
-      type="number"
-      label="Reorder Quantity"
-      name="reorder_quantity"
-      value={selectedItem?.reorder_quantity || ""}
-      onChange={(e) =>
-        setSelectedItem({
-          ...selectedItem,
-          reorder_quantity: parseInt(e.target.value) || 0,
-        })
-      }
-    />
+
 
     {/* Location Dropdown */}
     <TextField

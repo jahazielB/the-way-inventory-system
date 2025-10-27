@@ -5,9 +5,9 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from "react-router-dom";
 import supabase from "../supabase-client";
 
-export const NotificationBell = () => {
+export const NotificationBell = ({approvals}) => {
   const [lowStockCount, setLowStockCount] = useState(0);
-  const [approvalCount, setApprovalCount] = useState(2);
+  
   const navigate = useNavigate();
 
   // 1️⃣ initial fetch
@@ -22,7 +22,7 @@ export const NotificationBell = () => {
       }
     setLowStockCount(data?.length||0);
   };
-
+  
   useEffect(() => {
     fetchLowStock();
 
@@ -65,12 +65,12 @@ export const NotificationBell = () => {
       onClick={() => navigate("/notifications")}
     >
     <Tooltip
-      title={`${lowStockCount} needs reorder, ${approvalCount} approval request`}
+      title={`${lowStockCount} Items needs reorder`}
       arrow
       placement="right"
     >
       <Badge
-        badgeContent={lowStockCount+approvalCount}
+        badgeContent={lowStockCount}
         color="error"
         overlap="circular"
         invisible={lowStockCount === 0}
