@@ -122,6 +122,13 @@ export const StockManPage = () => {
     { item_name: "Warrior Lures", action_type: "stock_in", quantity: 50, status: "approved" }
   ];
    const handleLogout = async () => {
+         
+         if (user.id) {
+             await supabase
+                  .from("users")
+                  .update({ is_logged_in: false, last_active:null })
+                  .eq("id", user.id);
+           }
         await supabase.auth.signOut();
        
         window.location.href = "/login";

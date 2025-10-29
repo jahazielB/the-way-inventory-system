@@ -14,11 +14,25 @@ export const Sidebar = ({data})=>{
         navigate(`/${menu}`)
         
     }
+ 
     const clearUser = useAuthStore(state=>state.clearUser)
     const handleLogout = async () => {
+        const {data:{user}} = await supabase.auth.getUser()
+        if (!user) return;
+
+        if (user.id) {
+        const {error} =await supabase
+          .from("users")
+          .update({ is_logged_in: false, last_active:null })
+          .eq("id", user.id);
+
+        if (error) console.error("Logout update error:", error);
+
+      }
       await supabase.auth.signOut();
       clearUser()
       window.location.href = "/login";
+      console.log(user)
     };
 
 

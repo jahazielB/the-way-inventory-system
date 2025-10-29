@@ -15,8 +15,25 @@ const LandingPage = ()=>{
         e.preventDefault()
         setLoading(true)
         setMessage("")
+        const redirectUrl =
+  window.location.hostname === "localhost" || window.location.hostname.startsWith("192.")
+    ? `${window.location.protocol}//${window.location.host}/auth/callback`
+    : "https://the-way-inventory.netlify.app/auth/callback";
 
         try{
+             const { data: userCheck, error: userCheckError } = await supabase
+            .from("users")
+            .select("is_logged_in")
+            .eq("email", email)
+            .single();
+
+            if (userCheckError) throw userCheckError;
+
+            if (userCheck?.is_logged_in) {
+            setMessage("This account is already logged in on another device.");
+            setLoading(false);
+            return;
+            }
             const {data:signInCheck, error:signInError} = await supabase.auth.signInWithPassword({email,password});
 
             if (signInError) throw new Error("Invalid email or password")
@@ -24,11 +41,15 @@ const LandingPage = ()=>{
             const {error:otpError} = await supabase.auth.signInWithOtp({
                 email,
                 options:{
-                    emailRedirectTo: `https://the-way-inventory.netlify.app/auth/callback`  
+                    emailRedirectTo: redirectUrl  
                 }
             })
 
             if (otpError) throw otpError
+                await supabase
+            .from("users")
+            .update({ is_logged_in: true, last_active: new Date() })
+            .eq("id", signInCheck.user.id);
 
             setMessage("OTP sent! Check your email to confirm login")
         }catch(error){
