@@ -6,6 +6,8 @@ const LandingPage = ()=>{
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
     const navigate = useNavigate();
     
    
@@ -54,15 +56,76 @@ const LandingPage = ()=>{
         {/* login form */}
         <div className="flex flex-col items-center justify-center mt-9">
             <div className=" h-[300px] w-[285px] bg-white shadow-2xl rounded-3xl p-10">
-                <form className="flex flex-col gap-6" action="" method="post" onSubmit={handleLogin}>
+                <form className="flex flex-col gap-6" action="" method="post" onSubmit={handleLogin} >
                     <div className="flex w-[197px] h-[32px] border rounded-[10px] border-[rgba(1,24,216,1)] p-1.5 gap-2">
                         <svg className="h-[18px] w-[18] text-[rgba(1,24,216,1)]" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ><g id="_01_align_center" data-name="01 align center"><path d="M21,24H19V18.957A2.96,2.96,0,0,0,16.043,16H7.957A2.96,2.96,0,0,0,5,18.957V24H3V18.957A4.963,4.963,0,0,1,7.957,14h8.086A4.963,4.963,0,0,1,21,18.957Z"/><path d="M12,12a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,12ZM12,2a4,4,0,1,0,4,4A4,4,0,0,0,12,2Z"/></g></svg>
                         <input className="w-[150px] h-[17px] outline-0" type="email" name="email" placeholder="email" required onChange={(e)=>setEmail(e.target.value)} />
                     </div>
-                    <div className="flex w-[197px] h-[32px]  border rounded-[10px] border-[rgba(1,24,216,1)] p-1.5 gap-2 ">
-                        <svg className="h-[18px] w-[18] text-[rgba(1,24,216,1)]"fill="currentColor" xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24" ><path d="M19,8.424V7A7,7,0,0,0,5,7V8.424A5,5,0,0,0,2,13v6a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V13A5,5,0,0,0,19,8.424ZM7,7A5,5,0,0,1,17,7V8H7ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V13a3,3,0,0,1,3-3H17a3,3,0,0,1,3,3Z"/><path d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Z"/></svg>
-                        <input className="w-[150px] h-[17px] border-0 outline-0" type="text" name="password" placeholder="password" required onChange={(e)=>setPassword(e.target.value)} />
+                    <div className="relative w-[197px] h-[32px] border rounded-[10px] border-[rgba(1,24,216,1)] p-1.5 flex items-center">
+                        <svg
+                            className="h-[18px] w-[18px] text-[rgba(1,24,216,1)] mr-2 flex-shrink-0"
+                            fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            id="Outline"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M19,8.424V7A7,7,0,0,0,5,7V8.424A5,5,0,0,0,2,13v6a5.006,5.006,0,0,0,5,5H17a5.006,5.006,0,0,0,5-5V13A5,5,0,0,0,19,8.424ZM7,7A5,5,0,0,1,17,7V8H7ZM20,19a3,3,0,0,1-3,3H7a3,3,0,0,1-3-3V13a3,3,0,0,1,3-3H17a3,3,0,0,1,3,3Z" />
+                            <path d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Z" />
+                        </svg>
+
+                        <input
+                            className="w-full h-[17px] outline-0 border-0 pr-6"
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="password"
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="off"
+                        />
+
+                        {/* 👁️ Eye toggle inside input */}
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-2 text-[rgba(1,24,216,1)] focus:outline-none"
+                        >
+                            {showPassword ? (
+                            // 👁️ Eye Open
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-4 h-4"
+                            >
+                                <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            ) : (
+                            // 🚫 Eye Closed
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                                stroke="currentColor"
+                                className="w-4 h-4"
+                            >
+                                <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M3 3l18 18M10.477 10.477A3 3 0 0112 9c1.657 0 3 1.343 3 3a3 3 0 01-.477 1.523m2.685 2.685A8.978 8.978 0 0012 21c-4.477 0-8.268-2.943-9.542-7a8.978 8.978 0 013.304-4.527m2.685-2.685A8.978 8.978 0 0112 3c4.477 0 8.268 2.943 9.542 7a8.978 8.978 0 01-3.304 4.527"
+                                />
+                            </svg>
+                            )}
+                        </button>
                     </div>
+
                     <button className="w-[197px] h-[32px] rounded-[10px]  bg-[rgba(1,24,216,1)] 
                         hover:bg-[rgba(107,107,182,0.9)] 
                         active:bg-[rgba(104,118,238,0.7)] 
