@@ -8,7 +8,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Pagination,IconButton,MenuItem,Dialog,DialogTitle,DialogContent,DialogActions,TextField,Button,CircularProgress,Select,
   FormControl,InputLabel,Checkbox,ListItemText,Snackbar,Alert} from "@mui/material"
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Edit, Delete, FilterList, Search, Download } from '@mui/icons-material';
 import { ConfirmDeleteCancel } from './modals/confirmDeleteCancel';
 
@@ -200,7 +199,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         </Table>
       </TableContainer>
       <div className="flex justify-center my-3">
-        <Pagination size="small" count={Math.ceil(total/rows)} showFirstButton showLastButton onChange={(e,value)=>pages(value)}/>
+        {!data||data.length===0?"No data to show":<Pagination size="small" count={Math.ceil(total/rows)} showFirstButton showLastButton onChange={(e,value)=>pages(value)}/>}
       </div>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
   <DialogTitle>Edit Item</DialogTitle>

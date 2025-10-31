@@ -80,7 +80,7 @@ export const SelectedProjectInventory = ()=>{
         else {
         setData(data)
         setTotal(count)
-        
+        console.log(data)
         }
     setLoading(false)
   }
