@@ -104,7 +104,12 @@ export const Chart = ({datas})=> {
       <div className="hidden sm:block bg-white h-[300px]   md:w-full lg:w-[clamp(700px,70vw,2000px)] lg:h-[450px] p-10 max-lg:px-4 lg:p-12 pt-2 max-sm:px-4  rounded-2xl shadow-md font-jakarta">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-[16px] font-semibold">Inventory Summary</h2>
-          <ExportExcelButton textHiddenMobile={"max-sm:hidden"} perPageStyle={"max-sm:h-[35px]"}/>
+          <span>{new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </span>
         </div>
         <Bar className="my-3  w-full h-[500px] " data={data} options={{...options,maintainAspectRatio: false,responsive:true, indexAxis:'x'}} />
       </div>

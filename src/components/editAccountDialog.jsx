@@ -36,7 +36,7 @@ export const EditAccountDialog = ({ open, onClose, onSave ,userData,updating }) 
     setTimeout(()=>{
       onClose()
     },2000)
-    console.log(formData)
+    
   };
 
   return (

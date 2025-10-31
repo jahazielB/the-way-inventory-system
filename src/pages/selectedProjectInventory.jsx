@@ -37,7 +37,7 @@ export const SelectedProjectInventory = ()=>{
             const {data,error} = await (customer_name?query.ilike("customers",`%${customer_name}%`):query)
             if (error) throw error;
             setExportData(data);
-            console.log("clicked")
+            
             
         }catch (err) {
             console.error("Export failed", err);
@@ -80,7 +80,7 @@ export const SelectedProjectInventory = ()=>{
         else {
         setData(data)
         setTotal(count)
-        console.log(data)
+        
         }
     setLoading(false)
   }
@@ -91,7 +91,7 @@ export const SelectedProjectInventory = ()=>{
     }else fetchData()
     
     
-    console.log("current project: ",customer_name)
+    
   }, [page]) // refetch when page changes
 
   const handlePagination = (value)=>{

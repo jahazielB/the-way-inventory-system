@@ -5,7 +5,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from "react-router-dom";
 import supabase from "../supabase-client";
 
-export const NotificationBell = ({approvals}) => {
+export const NotificationBell = ({approvals,location}) => {
   const [lowStockCount, setLowStockCount] = useState(0);
   
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export const NotificationBell = ({approvals}) => {
 
   return (
     <div
-      className="flex items-center gap-2 mb-2 cursor-pointer active:bg-amber-600 hover:bg-[rgba(107,107,182,0.9)] rounded-4xl"
+      className={`flex items-center gap-2 mb-2 cursor-pointer active:bg-amber-600 hover:bg-[rgba(107,107,182,0.9)]  rounded-4xl ${location === '/notifications'&&'bg-gray-300 font-black'}`}
       onClick={() => navigate("/notifications")}
     >
     <Tooltip

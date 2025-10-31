@@ -4,6 +4,8 @@ import supabase from "../supabase-client"
 import { Button, CircularProgress, Snackbar, Alert,Select,MenuItem,Checkbox,ListItemText,OutlinedInput } from "@mui/material";
 export const AddItem = ()=>{
     const [datas,setData] = useState()
+    const [customUnit, setCustomUnit] = useState("");
+    const [showCustomUnitInput, setShowCustomUnitInput] = useState(false);
     const [formData, setFormData] = useState({
         item_name: "",
         unit: "",
@@ -22,7 +24,7 @@ export const AddItem = ()=>{
       ...formData,
       [e.target.name]: e.target.value,
     });
-    console.log(formData)
+    
     
   };
     useEffect(() => {
@@ -35,7 +37,7 @@ export const AddItem = ()=>{
                 console.error(error);
             } else {
                 setData(data)
-                console.log(data.locations[0].id)
+                
                 
             }
             };
@@ -54,7 +56,7 @@ export const AddItem = ()=>{
 
       const { data, error } = await supabase.rpc("manage_item", {
         p_action: "insert",
-        p_item_name: formData.item_name,
+        p_item_name: formData.item_name.trim(),
         p_unit: formData.unit,
         p_opening_stock: formData.opening_stock ? parseFloat(formData.opening_stock) : 0,
         p_reorder_point: formData.reorder_point ? parseFloat(formData.reorder_point) : 0,
@@ -92,10 +94,64 @@ export const AddItem = ()=>{
                                 <input onChange={(e)=>handleChange(e)} required value={formData.item_name} name="item_name" type="text" placeholder="Item Name" className="w-full h-full outline-none bg-transparent text-center"/>
                             </div>
                             <div className="createAccountTextArea flex items-center justify-center">
-                                <select  required name="unit" value={formData.unit} onChange={(e)=>handleChange(e)} className="border-none focus:outline-none  rounded w-15 py-2 ">
+                                
+                                {showCustomUnitInput? (
+                                <div className="createAccountTextArea flex gap-2 items-center">
+                                    <input
+                                    type="text"
+                                    placeholder="Enter new unit"
+                                    value={customUnit}
+                                    onChange={(e) => setCustomUnit(e.target.value)}
+                                    className="w-full h-full outline-none bg-transparent text-center border-b border-gray-300"
+                                    />
+                                    <Button
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                    textTransform: "none",
+                                    minWidth: "80px",
+                                    backgroundColor: "#2563eb",
+                                    "&:hover": { backgroundColor: "#1d4ed8" },
+                                    }}
+                                    onClick={() => {
+                                        if (customUnit.trim()) {
+                                        setFormData({ ...formData, unit: customUnit.trim() });
+                                        setShowCustomUnitInput(false);
+                                        setCustomUnit("");
+                                        }
+                                    }}
+                                    >
+                                    Save
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        variant="outlined"
+                                        sx={{
+                                        textTransform: "none",
+                                        minWidth: "80px",
+                                        }}
+                                        onClick={() => {
+                                        setShowCustomUnitInput(false);
+                                        setCustomUnit("");
+                                        }}
+                                    >
+                                        Back
+                                    </Button>
+                                </div>
+                                ):(<select  required name="unit" value={formData.unit} onChange={(e) => {
+                                    if (e.target.value === "__add_new__") {
+                                        setShowCustomUnitInput(true);
+                                        setFormData({ ...formData, unit: "" });
+                                    } else {
+                                        handleChange(e);
+                                    }
+                                    }} className="border-none focus:outline-none  rounded w-15 py-2 ">
                                     <option value=""  disabled  hidden>Unit</option>
                                     {datas&&(datas.units).map((d,index)=><option key={index} value={d}>{d}</option>)}
-                                </select>
+                                    <option value="__add_new__" className="text-blue-600 font-semibold">
+                                        + Add new unit
+                                    </option>
+                                </select>)}
                             </div>
                             <div className="createAccountTextArea flex items-center justify-center">
                                 <Select

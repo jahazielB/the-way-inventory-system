@@ -36,7 +36,7 @@ export const SelectedProject = ()=>{
         if (error) console.error(error)
         else {
         setDataFetched(data)
-        console.log(data)
+        
     }
   }
 
@@ -49,7 +49,7 @@ export const SelectedProject = ()=>{
         return `${year}-${month}-${day}`;
         };
     const handleApplyDates = async() => {
-    console.log("Applied date filter:", { dateMode, selectedDate, dateRange });
+    ;
     
     
     //  integrate date filter into your RPC
@@ -66,7 +66,7 @@ export const SelectedProject = ()=>{
 
   useEffect(()=>{
     fetchData()
-    console.log(project_name)
+    
   },[])
 
     useEffect(() => {
@@ -84,7 +84,7 @@ export const SelectedProject = ()=>{
           table: tableName,
         },
         (payload) => {
-          console.log("Realtime event received:", payload);
+          
           // 🔁 Re-fetch updated data whenever any record changes
           fetchData();
         }

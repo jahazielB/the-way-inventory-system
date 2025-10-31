@@ -54,7 +54,7 @@ export const StockManPage = () => {
         .eq("requested_by",user.id);
     if (error) console.error("error: ", error)
     else {
-    console.log(approvals_view)
+    
     setFetchedRequest(approvals_view)
 }
   }
@@ -85,7 +85,7 @@ export const StockManPage = () => {
 
       // Append new data to existing list
     setLowStockItems((prev) => [...prev, ...data]);
-    console.log(data);
+    
 
     setLoading(false);
   };

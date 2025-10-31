@@ -37,8 +37,8 @@ export const InventoryTable = ({data,rows,pages,total,refetch}) => {
     item.customer_ids = item.customers.map(c=>c.id)
     setSelectedItem(item)
     setWholeData(data)
-    console.log(item)
-    console.log(data)
+    
+    
     setLoadingId(null)
     
   }
@@ -80,7 +80,7 @@ export const InventoryTable = ({data,rows,pages,total,refetch}) => {
         console.error("Update error:", error);
         alert("Failed to update item!");
       } else {
-        console.log("Updated item:", data);
+        
         setSnackbar({ open: true, type: "success", message: "Item Update Success!" });
         setOpen(false);
         refetch()
@@ -89,7 +89,7 @@ export const InventoryTable = ({data,rows,pages,total,refetch}) => {
     console.error("Unexpected error:", err);
     setSnackbar({ open: true, type: "error", message: "Failed to save item." });
   }
-    console.log(selectedItem)
+   
   }
 
   const handleClose = () => {
@@ -185,7 +185,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                     <IconButton onClick={()=>{
                       fetch(row.item_id)
                       setModalOpen(true)
-                      console.log(row.item_id)}} size="small" color="error">
+                      }} size="small" color="error">
                       <Delete fontSize="small" />
                     </IconButton>
                   </div>)

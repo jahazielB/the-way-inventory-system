@@ -17,7 +17,7 @@ export const AccountManagementPage = ()=>{
 
         if (error) console.error("Error fetching users:", error);
         else {
-            console.log("Users:", data)
+            
             setData(data)
         };
 

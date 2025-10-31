@@ -5,32 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const ProjectPreview = ({fetchApprovals}) => {
   const navigate = useNavigate();
 
-  const [approvals] = useState([
-    {
-      status: "Pending",
-      color: { bg: "#FFF3CD", text: "#856404", dot: "#FFC107" },
-      item_name: "DB0102 DOUG'S Green 8mm",
-      qty: "5000 PCS",
-      approved_by: "John Doe",
-      stage: "FOR APPROVAL",
-    },
-    {
-      status: "Approved",
-      color: { bg: "#D1E7DD", text: "#0F5132", dot: "#28A745" },
-      item_name: "BD-11G Glossy Brown",
-      qty: "3000 PCS",
-      approved_by: "Jane Smith",
-      stage: "APPROVED",
-    },
-    {
-      status: "Pending",
-      color: { bg: "#FFF3CD", text: "#856404", dot: "#FFC107" },
-      item_name: "BD-17P Orange Pearl",
-      qty: "1200 PCS",
-      approved_by: "Michael Lee",
-      stage: "FOR APPROVAL",
-    },
-  ]);
+
 
   return (
     <Card sx={{ borderRadius: 3, boxShadow: 1, height: 260 }}>
@@ -54,7 +29,7 @@ export const ProjectPreview = ({fetchApprovals}) => {
         <Divider sx={{ mb: 1 }} />
 
         {/* Table */}
-        {approvals?.length === 0  ? (
+        {fetchApprovals?.length === 0  ? (
           <Typography
             sx={{
               color: "text.secondary",

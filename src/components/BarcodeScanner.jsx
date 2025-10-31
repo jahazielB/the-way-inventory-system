@@ -212,7 +212,7 @@ export const BarcodeScanner = forwardRef(
         }
 
         await new Promise((r) => setTimeout(r, 300));
-        console.log("✅ Camera fully released");
+        
       } catch (err) {
         console.warn("Error stopping scanner:", err);
       }

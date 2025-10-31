@@ -27,7 +27,7 @@ export const AccountManagementTable = ({data,refetch})=>{
         const foundUser = data.find(d=>d.email===email)
         setDeleteItem(foundUser.id)
         setOpen({...open,deleteModal:true})
-        console.log(foundUser)
+        
     }
     const handleConfirmDeleteButton = async ()=>{
         setUpdating(true)
@@ -48,7 +48,7 @@ export const AccountManagementTable = ({data,refetch})=>{
       const foundUser = data.find(d=>d.email===email)
       setSelectedData(foundUser)
       setOpen({...open,editModal:true})
-      console.log(foundUser)
+    
     }
 
     const handleSave = async (formData)=>{

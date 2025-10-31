@@ -45,7 +45,7 @@ export const ReplenishReleasePage = ({mode})=>{
 
         if (error) console.error("Fetch error:", error);
         else {
-        // console.log(items)
+       
         setData(items);
         setTotal(count);
         

@@ -65,7 +65,7 @@ export const ReportTable = ({project_name,data,mode,reportMode,infoDate,exportOp
     const handleDeleteIcon = (id)=>{
       setOpen({...open,deleteModal:true})
       setSelectedItem({...selectedItem,id:id})
-      console.log(id)
+      
     }
     const handleCancelModal = ()=>{
       setOpen({...open,deleteModal:false})
@@ -76,7 +76,7 @@ export const ReportTable = ({project_name,data,mode,reportMode,infoDate,exportOp
     const handleEditModal = (id)=>{
       setOpen({...open,editModal:true})
       setSelectedItem({...selectedItem,id:id})
-      console.log(id)
+      
       
     }
 

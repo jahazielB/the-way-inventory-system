@@ -38,7 +38,7 @@ export const UserReleaseReplenishPage = () => {
   const fetchUser = async ()=>{
           const {data:{user}} = await supabase.auth.getUser()
           if (!user) return;
-          // console.log("current user: " ,user)
+         
   
           const {data ,error} = await supabase
               .from("users")
@@ -48,7 +48,7 @@ export const UserReleaseReplenishPage = () => {
           if (error) console.error
           else {
               setUserData(data)
-              console.log(data)
+              
           }
       }
 
@@ -318,7 +318,7 @@ export const UserReleaseReplenishPage = () => {
                  const itemName = selectedItem?.name || selectedItem || "";
                  const itemId = selectedItem?.id || null;
                   const quantity = e.target.quantity.value.trim();
-                  console.log(options)
+                  
                   if (!itemName || !quantity) {
                     setSnackbar({
                       open: true,

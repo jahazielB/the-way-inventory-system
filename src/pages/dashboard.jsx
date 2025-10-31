@@ -12,7 +12,7 @@ export const Dashboard = ()=>{
     const fetchUser = async ()=>{
         const {data:{user}} = await supabase.auth.getUser()
         if (!user) return;
-        // console.log("current user: " ,user)
+        
 
         const {data ,error} = await supabase
             .from("users")
@@ -23,7 +23,7 @@ export const Dashboard = ()=>{
         else {
             setAdmin(data)
             setUser(data)
-            console.log(data)
+            
         }
     }
     const fetch = async ()=>{
@@ -39,7 +39,7 @@ export const Dashboard = ()=>{
         if (error) console.error("error: ", error)
             else {
                 setApprovals(approvals_view)
-                console.log(approvals_view)
+                
         }
     }
     useEffect(()=>{
@@ -55,7 +55,7 @@ export const Dashboard = ()=>{
                 <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
             </div>
             <div>
-                <p className="text-white text-[15px] xl:text-[20px] font-bold">Hey <span className="text-blue-600 font-jakarta">Administrator - {admin?.profile_name||""}</span>  <span className="font-normal text-[13px] xl:text-[16px]">here's what's happening today</span></p>
+                <p className="text-black text-[15px] xl:text-[20px] font-bold">Hey <span className="text-blue-600 font-jakarta">Administrator - {admin?.profile_name||""}</span>  <span className="font-normal text-[13px] xl:text-[16px]">here's what's happening today</span></p>
                 <div className="flex flex-col max-lg:gap-2 lg:gap-4">
                     <Chart datas={data}/>
                     <ProjectPreview fetchApprovals={approvals}/>

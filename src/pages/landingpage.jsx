@@ -71,8 +71,8 @@ const LandingPage = ()=>{
 
     return <div className="p-0">
         {/* company text */}
-        <div className="h-[61px] max-w-full  bg-white pt-[5px] mt-[80px]">
-            <h1 className=" text-center  text-[36px] font-black  text-[rgba(1,24,216,1)] company-name ">THE WAY</h1>
+        <div className="h-[61px] max-w-full  bg-white pt-[5px] mt-[80px] relative">
+            <img className="absolute -top-[25px] lg:-top-[65px] left-1/2 -translate-x-1/2 sm:w-[180px] h-[150px] w-[150px] md:h-[185px] z-10" src="/TheWayLogo.png" alt="" />
         </div>
         {/* login form */}
         <div className="flex flex-col items-center justify-center mt-9">

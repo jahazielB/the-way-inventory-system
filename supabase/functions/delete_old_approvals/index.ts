@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`✅ Deleted ${count ?? 0} approvals older than ${cutoffDate.toISOString()}`);
+    
 
     return new Response(
       JSON.stringify({
