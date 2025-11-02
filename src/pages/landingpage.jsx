@@ -38,6 +38,7 @@ const LandingPage = ()=>{
 
             if (signInError) throw new Error("Invalid email or password")
 
+
             const {error:otpError} = await supabase.auth.signInWithOtp({
                 email,
                 options:{
@@ -46,10 +47,7 @@ const LandingPage = ()=>{
             })
 
             if (otpError) throw otpError
-                await supabase
-            .from("users")
-            .update({ is_logged_in: true, last_active: new Date() })
-            .eq("id", signInCheck.user.id);
+
 
             setMessage("OTP sent! Check your email to confirm login")
         }catch(error){
@@ -57,16 +55,6 @@ const LandingPage = ()=>{
         }finally{
             setLoading(false)
         }
-    }
-
-    const handleGoogleLogin = async () =>{
-        const {error} = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `https://localhost:5173/`, // redirect after login
-      },
-        });
-        if (error) alert(error.message);
     }
 
     return <div className="p-0">

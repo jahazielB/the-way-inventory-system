@@ -1,45 +1,49 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import type { Database } from "../../_shared/database.types"; // optional if you have typed schema
+// Disable Supabase JWT auth so we can use our custom CRON secret
+export const config = {
+  auth: false,
+};
 
-// Initialize Supabase client with service role key
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import type { Database } from "../../_shared/database.types"; // optional
+
 const supabase = createClient<Database>(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
 
-// Common CORS headers
+const CRON_SECRET = Deno.env.get("CRON_SECRET");
+
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*", // or specify your domain like "https://yourapp.vercel.app"
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Headers": "Authorization, Content-Type",
 };
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight (OPTIONS)
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  // 🔒 Custom Bearer auth check
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader || authHeader !== `Bearer ${CRON_SECRET}`) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: corsHeaders,
+    });
+  }
+
   try {
-    // Calculate cutoff date (60 days ago)
+    // 🧹 Example logic: delete records older than 60 days
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 60);
 
-    // Delete approvals older than 60 days
     const { error, count } = await supabase
       .from("approvals")
       .delete({ count: "exact" })
       .lt("created_at", cutoffDate.toISOString());
 
-    if (error) {
-      console.error("❌ Error deleting old approvals:", error);
-      return new Response(
-        JSON.stringify({ success: false, error: error.message }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    
+    if (error) throw error;
 
     return new Response(
       JSON.stringify({
@@ -50,10 +54,9 @@ Deno.serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
-    console.error("⚠️ Unexpected error:", err);
-    return new Response(
-      JSON.stringify({ success: false, error: String(err) }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: String(err) }), {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
 });

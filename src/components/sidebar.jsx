@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate,useLocation,Link } from "react-router-dom"
+import { useNavigate,useLocation,useMatch } from "react-router-dom"
 import supabase from "../supabase-client"
 import useAuthStore from "../store/useAuthStore"
 
@@ -9,6 +9,8 @@ export const Sidebar = ({data})=>{
 
     const navigate = useNavigate()
     const [isOpen,setIsOpen] = useState(false)
+    const projectMatch = useMatch("/projects/:projectName")
+    const inventoryMatch = useMatch("/inventory/item_summary/:inventoryName")
     const location = useLocation()
     const temporaryHandleClick = (menu)=>{
         navigate(`/${menu}`)
@@ -60,24 +62,34 @@ export const Sidebar = ({data})=>{
                 </svg>
                 <span className="">Dashboard</span>
               </li>
-              <li className={`dashboard-menu submenu ${location.pathname === '/projects'&&'bg-gray-300 font-black'}`} onClick={()=>temporaryHandleClick('projects')}>
+              <li className={`dashboard-menu submenu ${location.pathname === '/projects' || location.pathname === `/projects/${encodeURIComponent(projectMatch?.params.projectName)}`  ?'bg-gray-300 font-black':''}`} onClick={()=>temporaryHandleClick('projects')}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.25 5.25V12.75C2.25 13.5784 2.92157 14.25 3.75 14.25H14.25C15.0784 14.25 15.75 13.5784 15.75 12.75V6.75C15.75 5.92157 15.0784 5.25 14.25 5.25H9.75L8.25 3.75H3.75C2.92157 3.75 2.25 4.42157 2.25 5.25Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span>Projects</span>
               </li>
-              <li className={`dashboard-menu submenu ${location.pathname === '/inventory'&&'bg-gray-300 font-black'}`} onClick={()=>temporaryHandleClick('inventory')}>
+              <div className="pl-19 my-2">
+                <span className=" text-[12px] ">{projectMatch?.params?.projectName}</span>
+              </div>
+              
+              <li className={`dashboard-menu submenu ${location.pathname === '/inventory'|| location.pathname === `/inventory/item_summary/${encodeURIComponent(inventoryMatch?.params.inventoryName)}`|| location.pathname === '/inventory/item_summary'?'bg-gray-300 font-black':''}`} onClick={()=>temporaryHandleClick('inventory')}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 6V12M9 8.25V12M6 10.5V12M4.5 15H13.5C14.3284 15 15 14.3284 15 13.5V4.5C15 3.67157 14.3284 3 13.5 3H4.5C3.67157 3 3 3.67157 3 4.5V13.5C3 14.3284 3.67157 15 4.5 15Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span>Inventory</span>
               </li>
-              <li className={`dashboard-menu submenu ${location.pathname === '/accounts'&&'bg-gray-300 font-black'}`} onClick={()=>temporaryHandleClick('accounts')}>
+              <div className="pl-19 my-2">
+                <span className=" text-[12px] ">{location.pathname === '/inventory/item_summary'?"General":inventoryMatch?.params?.inventoryName}</span>
+              </div>
+              <li className={`dashboard-menu submenu ${location.pathname === '/accounts' || location.pathname === '/accounts/create' ?'bg-gray-300 font-black':''}`} onClick={()=>temporaryHandleClick('accounts')}>
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="#0118D8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 3.26563C9.54971 2.64282 10.354 2.25 11.25 2.25C12.9069 2.25 14.25 3.59315 14.25 5.25C14.25 6.90685 12.9069 8.25 11.25 8.25C10.354 8.25 9.54971 7.85718 9 7.23437M11.25 15.75H2.25V15C2.25 12.5147 4.26472 10.5 6.75 10.5C9.23528 10.5 11.25 12.5147 11.25 15V15.75ZM11.25 15.75H15.75V15C15.75 12.5147 13.7353 10.5 11.25 10.5C10.4304 10.5 9.66189 10.7191 9 11.102M9.75 5.25C9.75 6.90685 8.40685 8.25 6.75 8.25C5.09315 8.25 3.75 6.90685 3.75 5.25C3.75 3.59315 5.09315 2.25 6.75 2.25C8.40685 2.25 9.75 3.59315 9.75 5.25Z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <span>Account Management</span>
               </li>
+              {location.pathname === '/accounts/create'&&(<div className="pl-19 my-2">
+                <span className=" text-[12px] ">Create Account</span>
+              </div>)}
             </ul>
           </nav>
         </div>

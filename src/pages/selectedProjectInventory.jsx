@@ -16,7 +16,7 @@ export const SelectedProjectInventory = ()=>{
 
     const [data, setData] = useState([])
     const [page, setPage] = useState(1)
-    const [rowsPerPage] = useState(15)
+    const [rowsPerPage] = useState(10)
     const [total, setTotal] = useState(0)
     const [searchQuery, setSearchQuery] = useState("");
     const {customer_name} = useParams()
@@ -80,7 +80,7 @@ export const SelectedProjectInventory = ()=>{
         else {
         setData(data)
         setTotal(count)
-        console.log(data)
+        
         }
     setLoading(false)
   }
@@ -100,10 +100,11 @@ export const SelectedProjectInventory = ()=>{
     
     return <div className="lg:flex gap-1">
             {previewOpen||<Sidebar/>}
-            <div className="flex flex-col  md:mx-17 lg:mx-auto xl:mx-auto 2xl:mx-auto max-md:gap-4 md:gap-8 lg:gap-14 xl:gap-25 p-4"> 
+            <div className="flex flex-col  md:mx-17 lg:mx-auto xl:mx-auto 2xl:mx-auto max-md:gap-4  lg:gap-4 xl:gap-6 p-4"> 
                 <div className="text-center text-blue-600 font-bold">
                     <span className="title">INVENTORY MANAGEMENT SYSTEM</span>
                 </div>
+                <span className="font-bold text-[18px]">{customer_name??"General"}</span>
                 {loading?(<Box className="flex justify-center items-center h-[80vh]">
                     <CircularProgress />
                 </Box>

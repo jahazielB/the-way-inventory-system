@@ -103,7 +103,7 @@ export const Projects = ({handleClick,handleGeneralClick})=>{
                     <path d="M28 32.6667C18.9793 32.6667 11.6667 39.9793 11.6667 49H44.3333C44.3333 39.9793 37.0206 32.6667 28 32.6667Z" stroke="black" stroke-width="1.2" 
                     stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <div className="border-l h-[36px] mx-6 pl-10 pt-1.5 font-bold text-[12px]">
+                    <div className="border-l h-[36px] mx-6 pl-10 pt-1.5 font-light text-[16px]">
                         <span>General</span>
                     </div>
                     
@@ -132,7 +132,7 @@ export const Projects = ({handleClick,handleGeneralClick})=>{
                     <path d="M28 32.6667C18.9793 32.6667 11.6667 39.9793 11.6667 49H44.3333C44.3333 39.9793 37.0206 32.6667 28 32.6667Z" stroke="black" stroke-width="1.2" 
                     stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <div className="border-l h-[36px] mx-6 pl-10 pt-1.5 font-bold text-[12px]" >
+                    <div className="border-l h-[36px] mx-6 pl-10 pt-1.5 font-light text-[15px]" >
                         <span>{location.pathname==='/inventory'?"ADD NEW LOCATION":"ADD NEW PROJECT"}</span>
                     </div>
                     

@@ -27,6 +27,10 @@ const AuthCallback = () => {
           navigate("/login");
           return;
         }
+        await supabase
+            .from("users")
+            .update({ is_logged_in: true, last_active: new Date() })
+            .eq("id", user.id);
 
         // Redirect based on role
         if (userData.role === "admin") {

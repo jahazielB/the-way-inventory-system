@@ -14,10 +14,11 @@ import { ApprovalPage } from "../pages/approvalPage"
 import { StockManPage } from "../pages/stockmanPage"
 import { UserActionPage } from "../pages/userActionPage"
 import { UserReleaseReplenishPage } from "../pages/UserReleaseOrReplenishPage"
-import AuthCallback from "../pages/AuthCallback"
+import NotFound from "../pages/NotFound"
 
+import AuthCallback from "../pages/AuthCallback"
 import { AdminRoute } from "./AdminRoute"
-import path from "path"
+
 
 export const router = createBrowserRouter([
     {
@@ -27,12 +28,12 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <AuthCallback/>,
-    errorElement: <div className="flex justify-center py-50">BOSS san ka punta?</div>
+    errorElement: <NotFound/>
   },
     {
     path:'/login',
     element:<LandingPage/>,
-    errorElement: <div className="flex justify-center py-50">BOSS san ka punta?</div>
+    errorElement: <NotFound/>
 },
   
 //admin-only section
@@ -68,5 +69,11 @@ export const router = createBrowserRouter([
         
     ]
 },
+
+  {
+    path: "*",
+    element: <NotFound />,
+  },
+
 
 ])

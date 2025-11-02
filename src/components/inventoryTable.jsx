@@ -147,7 +147,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
               <StyledTableCell>Unit</StyledTableCell>
               <StyledTableCell>Opening Stock</StyledTableCell>
               <StyledTableCell>ReOrder Point</StyledTableCell>
-              <StyledTableCell>ReOrder Qty</StyledTableCell>
               <StyledTableCell>ReOrder Notification</StyledTableCell>
               <StyledTableCell>Customer</StyledTableCell>
               <StyledTableCell>Location</StyledTableCell>
@@ -166,7 +165,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
                 <StyledTableCell align="left">{row.unit}</StyledTableCell>
                 <StyledTableCell align="left">{row.opening_stock}</StyledTableCell>
                 <StyledTableCell align="left">{row.reorder_point}</StyledTableCell>
-                <StyledTableCell align="right">{row.reorderQty}</StyledTableCell>
                 <StyledTableCell align="left">{!row.reorder_notification?'in stock':'REORDER'}</StyledTableCell>
                 <StyledTableCell align="left">{row.customers}</StyledTableCell>
                 <StyledTableCell align="left">{row.location_name}</StyledTableCell>
