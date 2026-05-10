@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../supabase-client";
+import LandingPage from "./landingpage";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -8,7 +9,6 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get session after OTP verification
         const { data, error } = await supabase.auth.getSession();
         if (error || !data.session) throw new Error("No active session");
 
@@ -28,9 +28,9 @@ const AuthCallback = () => {
           return;
         }
         await supabase
-            .from("users")
-            .update({ is_logged_in: true, last_active: new Date() })
-            .eq("id", user.id);
+          .from("users")
+          .update({ is_logged_in: true, last_active: new Date() })
+          .eq("id", user.id);
 
         // Redirect based on role
         if (userData.role === "admin") {
@@ -49,7 +49,7 @@ const AuthCallback = () => {
 
   return (
     <div className="flex items-center justify-center h-screen text-lg">
-      Verifying OTP...
+      Verifying...
     </div>
   );
 };
