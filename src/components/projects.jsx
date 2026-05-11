@@ -439,27 +439,31 @@ export const Projects = ({ handleClick, handleGeneralClick }) => {
         </DialogTitle>
         <DialogContent>
           {/* 👇 New Section: Show current locations/projects */}
-          {location.pathname === "/inventory" && (
-            <Box sx={{ maxHeight: 200, overflowY: "auto", mt: 2 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                Current Locations Listed:
-              </Typography>
-              <List dense>
-                {locations?.map((item) => (
-                  <ListItem key={item.id} disablePadding>
-                    <ListItemText primary={item.name} />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          )}
+          {dialogMode === "edit"
+            ? ""
+            : location.pathname === "/inventory" && (
+                <Box sx={{ maxHeight: 200, overflowY: "auto", mt: 2 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Current Locations Listed:
+                  </Typography>
+                  <List dense>
+                    {(locations || []).map((item) => (
+                      <ListItem key={item.id} disablePadding>
+                        <ListItemText primary={item.name} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
           <FormControl fullWidth>
             <TextField
               fullWidth
               label={
-                location.pathname === "/inventory"
-                  ? "Location Name"
-                  : "Project Name"
+                dialogMode === "edit"
+                  ? "Edit Project Name"
+                  : location.pathname === "/inventory"
+                    ? "Location Name"
+                    : "Project Name"
               }
               name="name"
               value={
